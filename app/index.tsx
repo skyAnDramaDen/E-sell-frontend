@@ -1,15 +1,25 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { useRouter } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
-import { router } from "expo-router";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Index() {
-    const { user, loading } = useAuth();
+    const { user, loading, loadStorage } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
         if (!loading) {
-            if (user) router.replace("/");
-            else router.replace("/login");
+            const timer = setTimeout(() => {
+                if (user) {
+                    router.replace("/(tabs)" as any);
+                    // router.replace("/(tabs)/index" as any);
+                }
+                else {
+                    router.replace("/(auth)/login");
+                }
+            }, 0);
+
+            return () => clearTimeout(timer);
         }
     }, [user, loading]);
 
