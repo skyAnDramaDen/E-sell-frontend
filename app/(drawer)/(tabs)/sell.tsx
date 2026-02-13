@@ -10,6 +10,7 @@ import {
 } from "../../../types/interfaces";
 
 import { base_url } from "../../../src/config/local";
+import { useFocusEffect } from "expo-router";
 
 import taxonomy from "../../../assets/taxonomy.json";
 import { useLocation } from "../../../hooks/useLocation";
@@ -17,14 +18,14 @@ import { useLocation } from "../../../hooks/useLocation";
 import * as Location from "expo-location";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 import {Ionicons} from "@expo/vector-icons";
+import { pickImage, takePhoto } from "../../../utils/imagePicker";
 
 export default function SellScreen() {
     // const { coords, address, useLocationError, setUseLocationLoading, getLocation } = useLocation();
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const router = useRouter();
     const { login, loading, error, user } = useAuth();
-    const [images, setImages] = useState<string[] | null>([]);
-    const [image, setImage] = useState<string | null>(null);
+    const [images, setImages] = useState<string[]>([]);
 
     const [selectedTop, setSelectedTop] = useState<CategoryNode | null | undefined>(null);
     const [selectedSecond, setSelectedSecond] = useState<CategoryNode | null | undefined>(null);
@@ -43,9 +44,18 @@ export default function SellScreen() {
     const [useLocationError, setUseLocationError] = useState<string | null>(null);
     const [useLocationLoading, setUseLocationLoading] = useState(false);
 
-    useEffect(() => {
-        // console.log(address);
-    }, [coords, address]);
+    useFocusEffect( React.useCallback(() => { // screen is focused
+        return () => { // screen is unfocused
+            setImages([]);
+            setSelectedTop(null);
+            setSelectedSecond(null);
+            setLocation("");
+            setDescription("");
+            setTitle("");
+            setPrice(null);
+        };
+        }, [])
+    );
 
     const getLocation = async () => {
         try {
@@ -70,43 +80,6 @@ export default function SellScreen() {
             setUseLocationError("Failed to get location");
         } finally {
             setUseLocationLoading(false);
-        }
-    };
-
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-            alert("Sorry, we need camera roll permissions to make this work!");
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            //if I set allowsEditing to true, I cannot select multiple images.
-            allowsEditing: false,
-            quality: 1,
-            allowsMultipleSelection: true,
-        });
-
-        if (!result.canceled) {
-            setImages(result.assets.map(asset => asset.uri))
-        }
-    };
-
-    const takePhoto = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== "granted") {
-            alert("Camera access is required!");
-            return;
-        }
-
-        const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
         }
     };
 
@@ -174,7 +147,13 @@ export default function SellScreen() {
                         justifyContent: "space-between",
                     }}
                 >
-                    <TouchableOpacity onPress={pickImage} >
+                    <TouchableOpacity onPress={async () => {
+                        let loaded_images = await pickImage();
+                        if (loaded_images) {
+                            let item_images = loaded_images.assets.map(asset => asset.uri)
+                            setImages([...images, ...item_images ]);
+                        }
+                    }} >
                         <LinearGradient
                             colors={["#ff6a00", "#ee0979"]}
                             start={{ x: 0, y: 0 }}
@@ -185,7 +164,15 @@ export default function SellScreen() {
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={takePhoto} >
+                    <TouchableOpacity onPress={async () => {
+                        let camera_image = await takePhoto();
+                        if  (camera_image) {
+                            setImages((prev) => {
+                                return [...prev, camera_image]
+                            })
+                        }
+                        }
+                    } >
                         <LinearGradient
                             colors={["#4c669f", "#3b5998", "#192f6a"]}
                             start={{ x: 0, y: 0 }}
@@ -204,7 +191,6 @@ export default function SellScreen() {
                         flexWrap: "wrap",
                     }}
                 >
-                    {image && <Image source={{ uri: image }} style={styles.preview} />}
                     {images && images.map((uri, index) => (
                         <Image
                             key={index}
@@ -246,7 +232,7 @@ export default function SellScreen() {
                     style={[styles.input, { height: 100, color: "#000" }]}
                     multiline
                 />
-                
+
                 <Text>Condition</Text>
                 <Picker
                     selectedValue={condition}
@@ -356,6 +342,7 @@ export default function SellScreen() {
                 <TouchableOpacity
                     onPress={handleSubmit}
                     style={styles.submitButton}
+                    disabled={images == null || selectedTop == null || selectedSecond == null || description == null || title == null || condition == null || price == null || location == null}
                 >
                     <Text style={styles.submitText}>Create Listing</Text>
                 </TouchableOpacity>
@@ -379,7 +366,6 @@ const styles = StyleSheet.create({
         display: "flex",
         fontSize: 22,
         fontWeight: "bold",
-        marginTop: 20,
         alignItems: "center",
     },
     preview: {

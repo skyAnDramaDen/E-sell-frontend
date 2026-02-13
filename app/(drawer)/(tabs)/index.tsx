@@ -43,38 +43,40 @@ export default function Index() {
                         <Text style={{ fontSize: 16 }}>Search</Text>
                     </Pressable>
 
-                    <Text style={styles.sectionTitle}>Browse Categories</Text>
+                    <View>
+                        <Text style={styles.sectionTitle}>Browse Categories</Text>
 
-                    <View style={styles.grid}>
-                        <ProductCategoryCard
-                            category="Electronics"
-                            imageURL="https://images.pexels.com/photos/1105379/pexels-photo-1105379.jpeg"
-                        />
+                        <View style={styles.grid}>
+                            <ProductCategoryCard
+                                category="Electronics"
+                                imageURL="https://images.pexels.com/photos/1105379/pexels-photo-1105379.jpeg"
+                            />
 
-                        <ProductCategoryCard
-                            category="Phones"
-                            imageURL="https://images.pexels.com/photos/10791677/pexels-photo-10791677.jpeg"
-                        />
+                            <ProductCategoryCard
+                                category="Phones"
+                                imageURL="https://images.pexels.com/photos/10791677/pexels-photo-10791677.jpeg"
+                            />
 
-                        <ProductCategoryCard
-                            category="Accessories"
-                            imageURL="https://images.unsplash.com/photo-1585386959984-a41552231692"
-                        />
+                            <ProductCategoryCard
+                                category="Accessories"
+                                imageURL="https://images.unsplash.com/photo-1585386959984-a41552231692"
+                            />
 
-                        <ProductCategoryCard
-                            category="Audio Equipment"
-                            imageURL="https://images.pexels.com/photos/14935011/pexels-photo-14935011.jpeg"
-                        />
+                            <ProductCategoryCard
+                                category="Audio Equipment"
+                                imageURL="https://images.pexels.com/photos/14935011/pexels-photo-14935011.jpeg"
+                            />
 
-                        <ProductCategoryCard
-                            category="Gaming"
-                            imageURL="https://images.pexels.com/photos/35005905/pexels-photo-35005905.jpeg"
-                        />
+                            <ProductCategoryCard
+                                category="Gaming"
+                                imageURL="https://images.pexels.com/photos/35005905/pexels-photo-35005905.jpeg"
+                            />
 
-                        <ProductCategoryCard
-                            category="Cameras"
-                            imageURL="https://images.pexels.com/photos/955794/pexels-photo-955794.jpeg"
-                        />
+                            <ProductCategoryCard
+                                category="Cameras"
+                                imageURL="https://images.pexels.com/photos/955794/pexels-photo-955794.jpeg"
+                            />
+                        </View>
                     </View>
                 </View>
             </View>

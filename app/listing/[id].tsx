@@ -36,7 +36,7 @@ export default function Listing() {
     return (
         <ScrollView style={styles.container}>
             <ActionButton name="Back" onPress={() => {
-                router.back();
+                router.replace("/listing");
             }} />
             <ScrollView horizontal pagingEnabled style={styles.imageCarousel}>
                 {imageURLs != null && imageURLs.map((url, index) => (
