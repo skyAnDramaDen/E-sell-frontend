@@ -1,35 +1,46 @@
 import React, {useEffect, useState} from "react";
 import {View, TextInput, Text, FlatList, StyleSheet, TouchableOpacity} from "react-native";
-import {useRouter} from "expo-router";
+import { Picker } from '@react-native-picker/picker';
+import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
 
 import SellButton from "../../../components/SellButton";
 import ActionButton from "../../../components/ActionButton";
 
 import {search_listings} from "../../../services/listingsServices";
-import {Products, AllListings} from "../../../types/interfaces";
+import {Products, AllListings, CategoryNode} from "../../../types/interfaces";
 import ListProduct from "../../../components/ListProduct";
+import taxonomy from "../../../assets/taxonomy.json";
+import ListingCard from "../../../components/ListingCard";
+import {Ionicons} from "@expo/vector-icons";
+import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 export default function Search() {
     const router = useRouter();
     const [query, setQuery] = useState("");
     const [listings, setListings] = useState<AllListings>([]);
+    const [selectedTop, setSelectedTop] = useState<CategoryNode | null | undefined>(null);
+    const navigation = useNavigation<DrawerNavigationProp<any>>();
+    const params = useLocalSearchParams();
+    const [category, setCategory] = useState(params.category as string || "");
 
     useEffect(() => {
-        if (query.length < 3) {
+        if (query.length < 3 && !category) {
             setListings([]);
             return;
         }
 
         const fetchData = async () => {
+            console.log("I am trying to fetch something here");
             try {
-                const found_listings = await search_listings(query);
+                const found_listings = await search_listings(query, category);
                 setListings(found_listings);
             } catch (error) {
+
             }
         }
 
         fetchData();
-    }, [query])
+    }, [query, category])
 
     useEffect(() => {
         console.log(listings)
@@ -37,8 +48,13 @@ export default function Search() {
 
     return (
         <View style={styles.container}>
+            <View style={{ flexDirection: "row", justifyContent: "flex-start", marginBottom: 10 }}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    <Ionicons name="menu" size={28} />
+                </TouchableOpacity>
+            </View>
             <TextInput
-                placeholder="Search listings…"
+                placeholder="Search"
                 placeholderTextColor="#888"
                 value={query}
                 onChangeText={async (text) => {
@@ -46,31 +62,52 @@ export default function Search() {
                 }}
                 style={styles.searchInput}
             />
+            {/*<View>*/}
+            {/*    <Picker*/}
+            {/*        selectedValue={selectedTop?.id ?? ""}*/}
+            {/*        onValueChange={(catID) => {*/}
+            {/*            const category = taxonomy.find((cat) => cat.id === catID);*/}
+            {/*            setSelectedTop(category);*/}
+            {/*        }}*/}
+            {/*        // style={{*/}
+            {/*        //     height: 50*/}
+            {/*        // }}*/}
+            {/*        style={{ marginVertical: 8, width: 300 }}*/}
+            {/*    >*/}
+            {/*        <Picker.Item label = "Select a category" value= "" color="#888" />*/}
+            {/*        {*/}
+            {/*            taxonomy.map((subCat) => (*/}
+            {/*                <Picker.Item key = {subCat.id} label = {subCat.name} value = {subCat.id} color="#000" />*/}
+            {/*            ))*/}
+            {/*        }*/}
+
+            {/*    </Picker>*/}
+            {/*</View>*/}
             <View style={styles.resultsContainer}>
-                {query.length === 0 ? (
+                {query.length < 1 && !category ? (
                     <Text style={styles.placeholderText}>Start typing to search…</Text>
                 ) : (
                     <Text style={styles.placeholderText}>
-                        Showing results for "{query}"
+                        Showing results for "{query.length > 0 ? query : category}"
                     </Text>
                 )}
 
                 {
                     listings.length > 0 && (
-                        <View style={styles.resultsList}>
-                            {
-                                listings.map((item) => (
-                                    <ListProduct item={item} key={item.product.id}>
+                        <FlatList
+                            data={listings}
+                            keyExtractor={(item) => item.product.id}
+                            renderItem={({ item }) => (
+                                <ListProduct item={item} key={item.product.id}>
 
                                 </ListProduct>
-                                ))}
-                        </View>)}
+                            )}
+                            showsVerticalScrollIndicator={false}
+                            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+                        />
+                    )
+                }
             </View>
-            <View style={styles.bottomButtons}>
-                {/*<SellButton />*/}
-                {/*<ActionButton />*/}
-            </View>
-
         </View>
     );
 }

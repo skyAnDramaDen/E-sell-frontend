@@ -15,7 +15,7 @@ export async function delete_listing(id: string) {
     return response.data;
 }
 
-export async function search_listings(search: string) {
-    const response = await api.get(`/listing?search=${search}`);
+export async function search_listings(search: string, category?: string) {
+    const response = await api.get(`/listing?search=${search}&category=${category}`);
     return response.data;
 }

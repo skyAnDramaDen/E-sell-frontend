@@ -10,7 +10,6 @@ import {useState} from "react";
 
 export default function Index() {
     const router = useRouter();
-    const [menuOpen, setMenuOpen] = useState(false);
     // const navigation = useNavigation();
     const navigation = useNavigation<DrawerNavigationProp<any>>();
 
@@ -23,33 +22,11 @@ export default function Index() {
                     </TouchableOpacity>
                 </View>
 
-                {menuOpen && (
-                    <View
-                        style={{
-                            position: "absolute",
-                            top: 50,
-                            left: 10,
-                            backgroundColor: "white",
-                            padding: 12,
-                            borderRadius: 8,
-                            elevation: 5,
-                            shadowColor: "#000",
-                            shadowOpacity: 0.2,
-                            shadowRadius: 4,
-                            zIndex: 999,
-                        }}
-                    >
-                        <Pressable onPress={() => console.log("Logout pressed")}>
-                            <Text style={{ paddingVertical: 8 }}>Logout</Text>
-                        </Pressable>
-                    </View>
-                )}
-
                 <View>
                     <View style={styles.actions}>
                         <SellButton onPress={() => router.navigate("/sell")} />
                         <ActionButton
-                            name="See Listings"
+                            name="My Listings"
                             onPress={() => router.push("/listing")}
                         />
                     </View>

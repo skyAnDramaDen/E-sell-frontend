@@ -5,10 +5,9 @@ import {
     RegisterRequestBody,
     AuthResponse
 } from "../types/interfaces";
+import {base_url} from "../src/config/local";
 
-// const base_url = process.env.REACT_APP_SERVER_URL || "https://localhost:3000";
 //TODO: hardcoded my ip address and should make sure to change that in the current git commit and going forward
-
 
 if (!base_url) {
     throw new Error("Base url not in environment variables");
@@ -28,4 +27,3 @@ export async function register_request (body: RegisterRequestBody): Promise<Auth
     const response = await api.post<AuthResponse>("/auth/register", body);
     return response.data;
 }
-

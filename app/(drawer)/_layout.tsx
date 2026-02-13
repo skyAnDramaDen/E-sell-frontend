@@ -9,13 +9,22 @@ export default function DrawerLayout() {
         //     }}
         // />
     <Drawer
-    drawerContent={(props) => <CustomDrawer {...props} />}
+        drawerContent={(props) => <CustomDrawer {...props} />}
     >
         <Drawer.Screen
             name="(tabs)"
             options={{
                 title: 'Home',
                 drawerItemStyle: { display: 'none' },
+                headerShown: false,
+            }}
+        />
+
+        <Drawer.Screen
+            name="profile"
+            options={{
+                title: 'Profile',
+                drawerItemStyle: { display: "contents" },
                 headerShown: false,
             }}
         />

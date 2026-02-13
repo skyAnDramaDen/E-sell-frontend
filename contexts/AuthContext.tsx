@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation, useRouter} from "expo-router";
 
 import {
     UserDTO,
@@ -20,19 +21,16 @@ interface AuthContextType {
     loadStorage: () => Promise<boolean>;
 }
 
-
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserDTO | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
+    const router = useRouter();
 
     useEffect(() => {
-
         loadStorage();
     }, []);
 
@@ -49,11 +47,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             return false;
         } catch (err) {
-            console.error('Failed to load user from storage', err);
             return false;
         }
     };
-
 
     const login = async (body: LoginRequestBody): Promise<AuthResponse> => {
         try {
@@ -72,7 +68,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             return response;
         } catch (error: any) {
-            console.error(error);
             const fallback: AuthResponse = {
                 message: error.message || 'Login failed',
             }
@@ -82,7 +77,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setLoading(false);
         }
     };
-
 
     const register = async (body: RegisterRequestBody): Promise<AuthResponse> => {
         try {
@@ -111,12 +105,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-
     const logout = async () => {
         setUser(null);
         setToken(null);
         await AsyncStorage.removeItem('user');
         await AsyncStorage.removeItem('token');
+        router.replace('/login');
     };
 
 

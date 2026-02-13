@@ -3,19 +3,24 @@ import {View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, 
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from '@react-native-picker/picker';
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import { useAuth } from "../../../hooks/useAuth";
 import {
     CategoryNode
 } from "../../../types/interfaces";
 
+import { base_url } from "../../../src/config/local";
+
 import taxonomy from "../../../assets/taxonomy.json";
 import { useLocation } from "../../../hooks/useLocation";
 
 import * as Location from "expo-location";
+import {DrawerNavigationProp} from "@react-navigation/drawer";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function SellScreen() {
     // const { coords, address, useLocationError, setUseLocationLoading, getLocation } = useLocation();
+    const navigation = useNavigation<DrawerNavigationProp<any>>();
     const router = useRouter();
     const { login, loading, error, user } = useAuth();
     const [images, setImages] = useState<string[] | null>([]);
@@ -31,8 +36,6 @@ export default function SellScreen() {
     const [price, setPrice] = useState<number | null>(null);
     const [availability , setAvailability] = useState<boolean | null>(true);
     const [location, setLocation] = useState<string>("");
-
-
 
     const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
     const [geocode1, setGeocode1] = useState<any>(null);
@@ -138,7 +141,7 @@ export default function SellScreen() {
             formData.append("userId", user.id);
 
             try {
-                const res = await fetch("http://172.20.10.11:3000/listing/add", {
+                const res = await fetch(base_url+ "/listing/add", {
                     method: "POST",
                     body: formData,
                 });
@@ -155,6 +158,11 @@ export default function SellScreen() {
     return (
         <ScrollView>
             <View style={styles.container}>
+                <View style={{ flexDirection: "row", justifyContent: "flex-start", marginBottom: 10 }}>
+                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                        <Ionicons name="menu" size={28} />
+                    </TouchableOpacity>
+                </View>
                 <Text style={styles.title}>Create a Listing</Text>
 
                 <View
@@ -162,7 +170,8 @@ export default function SellScreen() {
                         display: "flex",
                         flexDirection: "row",
                         marginTop: 20,
-                        justifyContent: "space-evenly",
+                        marginBottom: 20,
+                        justifyContent: "space-between",
                     }}
                 >
                     <TouchableOpacity onPress={pickImage} >

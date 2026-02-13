@@ -15,7 +15,10 @@ import {delete_listing} from "../services/listingsServices";
 export default function ProductCategoryCard({ category, imageURL, size }: { category: string, imageURL: string, size?: "small" | "large"; }) {
     const router = useRouter();
     return (
-        <Pressable onPress={() => {}}
+        <Pressable onPress={() => {
+            router.push(`/search?query=shoes&category=${category}`);
+            // router.navigate("/sell");
+        }}
         style={{ width: 190, height: 190, }}
         >
             <Image source={{
