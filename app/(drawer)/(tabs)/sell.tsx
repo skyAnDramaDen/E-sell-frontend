@@ -19,9 +19,9 @@ import * as Location from "expo-location";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 import {Ionicons} from "@expo/vector-icons";
 import { pickImage, takePhoto } from "../../../utils/imagePicker";
+import { create_listing } from "../../../services/listingsServices";
 
 export default function SellScreen() {
-    // const { coords, address, useLocationError, setUseLocationLoading, getLocation } = useLocation();
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const router = useRouter();
     const { login, loading, error, user } = useAuth();
@@ -114,15 +114,9 @@ export default function SellScreen() {
             formData.append("userId", user.id);
 
             try {
-                const res = await fetch(base_url+ "/listing/add", {
-                    method: "POST",
-                    body: formData,
-                });
+                const res = await create_listing(formData);
 
-                const data = await res.json();
-
-
-                router.replace(`/listing/${data.product.id}`)
+                router.replace(`/listing/${res.product.id}`)
             } catch (error) {
             }
         }

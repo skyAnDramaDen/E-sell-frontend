@@ -32,7 +32,6 @@ export default function Search() {
         }
 
         const fetchData = async () => {
-            console.log("I am trying to fetch something here");
             try {
                 const found_listings = await search_listings(query, category);
                 setListings(found_listings);
@@ -43,10 +42,6 @@ export default function Search() {
 
         fetchData();
     }, [query, category])
-
-    useEffect(() => {
-        console.log(listings)
-    }, [listings]);
 
     return (
         <View style={styles.container}>

@@ -14,6 +14,7 @@ import {
 import {get_listing, get_listings} from "../../services/listingsServices";
 
 import { useAuth } from "../../hooks/useAuth";
+import {Ionicons} from "@expo/vector-icons";
  export default function Listings() {
      const router = useRouter();
      const { login, loading, error, user } = useAuth();
@@ -37,6 +38,11 @@ import { useAuth } from "../../hooks/useAuth";
 
      return (
          <View style={{ flex: 1, padding: 16 }}>
+             <TouchableOpacity onPress={() => {
+                 router.replace("/(tabs)" as any);
+             }}>
+                 <Ionicons name="home-outline" size={25} color="#333" />
+             </TouchableOpacity>
              <FlatList
                  data={listings}
                  keyExtractor={(item) => item.product.id}

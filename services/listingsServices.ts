@@ -19,3 +19,8 @@ export async function search_listings(search: string, category?: string) {
     const response = await api.get(`/listing?search=${search}&category=${category}`);
     return response.data;
 }
+
+export async function create_listing(formData: FormData) {
+    const response = await api.post("/listing/add", formData);
+    return response.data;
+}

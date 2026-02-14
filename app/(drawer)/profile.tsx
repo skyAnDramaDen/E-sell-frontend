@@ -10,6 +10,7 @@ import {
 } from "../../types/interfaces";
 
 import { base_url } from "../../src/config/local";
+import { Ionicons } from "@expo/vector-icons";
 
 import taxonomy from "../../assets/taxonomy.json";
 import { useLocation } from "../../hooks/useLocation";
@@ -17,6 +18,7 @@ import { useLocation } from "../../hooks/useLocation";
 export default function Profile() {
     const { login, loading, error, user } = useAuth();
     const [editMode, setEditMode] = useState(false);
+    const router = useRouter();
     const [image, setImage] = useState<string>();
     const [userData, setUserData] = useState({
         name: user?.name ?? "",
@@ -52,14 +54,21 @@ export default function Profile() {
         <ScrollView className="flex-1 bg-gray-100">
             <View className="flex-1 items-center px-2.5 pt-5 pb-10">
                 <View className="w-full bg-white rounded-3xl px-6 py-5 shadow-lg items-center">
-                    <Pressable
-                        onPress={() => setEditMode(!editMode)}
-                        className="self-end mb-4 bg-black px-4 py-2 rounded-xl"
-                    >
-                        <Text className="text-white font-semibold">
-                            {editMode ? "Cancel" : "Edit"}
-                        </Text>
-                    </Pressable>
+                    <View className="flex flex-row justify-between items-center w-full">
+                        <TouchableOpacity onPress={() => {
+                            router.replace("/(tabs)" as any);
+                        }}>
+                            <Ionicons name="home-outline" size={25} color="#333" />
+                        </TouchableOpacity>
+                        <Pressable
+                            onPress={() => setEditMode(!editMode)}
+                            className="self-end mb-4 bg-black px-4 py-2 rounded-xl"
+                        >
+                            <Text className="text-white font-semibold">
+                                {editMode ? "Cancel" : "Edit"}
+                            </Text>
+                        </Pressable>
+                    </View>
 
                     <Image
                         source={{ uri: "https://www.iconsdb.com/icons/download/gray/user-512.png" }}
