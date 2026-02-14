@@ -2,6 +2,7 @@ export interface UserDTO {
     id: string;
     name: string;
     email: string;
+    phoneNumber?: number
 }
 
 export interface RegisterRequestBody {
@@ -68,4 +69,5 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
     products?: Product[];
+    phoneNumber?: number
 }

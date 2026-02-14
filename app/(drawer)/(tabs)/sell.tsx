@@ -44,8 +44,8 @@ export default function SellScreen() {
     const [useLocationError, setUseLocationError] = useState<string | null>(null);
     const [useLocationLoading, setUseLocationLoading] = useState(false);
 
-    useFocusEffect( React.useCallback(() => { // screen is focused
-        return () => { // screen is unfocused
+    useFocusEffect( React.useCallback(() => {
+        return () => {
             setImages([]);
             setSelectedTop(null);
             setSelectedSecond(null);

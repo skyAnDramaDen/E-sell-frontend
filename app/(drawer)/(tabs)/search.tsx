@@ -14,6 +14,8 @@ import ListingCard from "../../../components/ListingCard";
 import {Ionicons} from "@expo/vector-icons";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 
+import { useFocusEffect } from "expo-router";
+
 export default function Search() {
     const router = useRouter();
     const [query, setQuery] = useState("");
