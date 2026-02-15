@@ -10,7 +10,7 @@ import {
     Product
 } from "../types/interfaces";
 
-import {delete_listing} from "../services/listingsServices";
+import {delete_listing} from "../services/listingsService";
 
 export default function ProductCategoryCard({ category, imageURL, size }: { category: string, imageURL: string, size?: "small" | "large"; }) {
     const router = useRouter();

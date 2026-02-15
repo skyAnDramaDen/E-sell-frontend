@@ -6,7 +6,7 @@ import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
 import SellButton from "../../../components/SellButton";
 import ActionButton from "../../../components/ActionButton";
 
-import {search_listings} from "../../../services/listingsServices";
+import {search_listings} from "../../../services/listingsService";
 import {Products, AllListings, CategoryNode} from "../../../types/interfaces";
 import ListProduct from "../../../components/ListProduct";
 import taxonomy from "../../../assets/taxonomy.json";

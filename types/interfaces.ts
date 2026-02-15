@@ -2,7 +2,7 @@ export interface UserDTO {
     id: string;
     name: string;
     email: string;
-    phoneNumber?: number
+    phoneNumber?: string
 }
 
 export interface RegisterRequestBody {
@@ -69,5 +69,10 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
     products?: Product[];
-    phoneNumber?: number
+    phoneNumber?: string
+}
+
+export interface GetUserResponseBody {
+    user?: User;
+    success: boolean;
 }

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useRouter} from "expo-router";
 
+
 import {
     UserDTO,
     AuthResponse,
@@ -9,6 +10,7 @@ import {
     RegisterRequestBody
 } from "../types/interfaces";
 import { login_request, register_request } from "../services/authService";
+import { get_user } from "../services/userService";
 
 interface AuthContextType {
     user: UserDTO | null;
@@ -19,6 +21,7 @@ interface AuthContextType {
     register: (body: RegisterRequestBody) => Promise<AuthResponse>;
     logout: () => Promise<void>;
     loadStorage: () => Promise<boolean>;
+    reload_user: (id: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,6 +53,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             return false;
         }
     };
+
+    const reload_user = async (id: string) => {
+        let user_fetched;
+        if (user) {
+            user_fetched = await get_user(id);
+        }
+
+        if (user_fetched) {
+            setUser(user_fetched);
+        }
+    }
 
     const login = async (body: LoginRequestBody): Promise<AuthResponse> => {
         try {
@@ -125,6 +139,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 register,
                 logout,
                 loadStorage,
+                reload_user,
             }}
         >
             {children}

@@ -5,34 +5,9 @@ import { useFonts } from 'expo-font';
 import { useContext } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets, } from 'react-native-safe-area-context';
+import FlashMessage from "react-native-flash-message";
 
 import "./globals.css";
-
-// function RootLayoutContent() {
-//   const { user, loading } = useContext(AuthContext)!;
-//
-//   if (loading) {
-//     return (
-//         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//           <ActivityIndicator size="large" />
-//         </View>
-//     );
-//   }
-//
-//   return (
-//       <Stack>
-//           <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-//           <Stack.Screen name="(tabs)/index" options={{ headerShown: false }} />
-//         {/*{!user ? (*/}
-//
-//         {/*    <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />*/}
-//         {/*) : (*/}
-//
-//         {/*    <Stack.Screen name="(tabs)/index" options={{ headerShown: false }} />*/}
-//         {/*)}*/}
-//       </Stack>
-//   );
-// }
 
 function RootLayoutContent() {
     const insets = useSafeAreaInsets();
@@ -50,6 +25,7 @@ function RootLayoutContent() {
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="listing/index" options={{ headerShown: false }} />
             </Stack>
+            <FlashMessage position="top" />
         </SafeAreaView>
     );
 }

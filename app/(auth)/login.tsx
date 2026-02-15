@@ -28,7 +28,7 @@ export default function LoginScreen() {
     };
 
     return (
-        <View className="flex-1 justify-center px-6">
+        <View className="flex-1 px-6 mt-20">
             {
                 loginLoading ? (
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

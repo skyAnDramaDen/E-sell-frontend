@@ -7,7 +7,7 @@ import {
     Listing
 } from "../types/interfaces";
 
-import {delete_listing} from "../services/listingsServices";
+import {delete_listing} from "../services/listingsService";
 
 
 export default function ListingCard({listing, onDelete}: { listing: Listing, onDelete: (productId: string) => void }) {

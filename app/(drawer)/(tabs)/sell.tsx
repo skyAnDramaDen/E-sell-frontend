@@ -19,7 +19,7 @@ import * as Location from "expo-location";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 import {Ionicons} from "@expo/vector-icons";
 import { pickImage, takePhoto } from "../../../utils/imagePicker";
-import { create_listing } from "../../../services/listingsServices";
+import { create_listing } from "../../../services/listingsService";
 
 export default function SellScreen() {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -118,6 +118,7 @@ export default function SellScreen() {
 
                 router.replace(`/listing/${res.product.id}`)
             } catch (error) {
+                alert("Error");
             }
         }
     }

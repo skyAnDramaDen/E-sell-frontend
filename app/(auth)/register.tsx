@@ -18,7 +18,7 @@ export default function RegisterScreen() {
             const result: AuthResponse = await register({ name, email, password });
 
             if (result.token && result.user) {
-                router.replace("/(tabs)/index" as any);
+                router.replace("/");
             }
 
         } catch (err) {

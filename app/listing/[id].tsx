@@ -9,7 +9,7 @@ import {
     Product
 } from "../../types/interfaces";
 
-import { get_listing } from "../../services/listingsServices";
+import { get_listing } from "../../services/listingsService";
 
 import { useAuth } from "../../hooks/useAuth";
 import ActionButton from "../../components/ActionButton";

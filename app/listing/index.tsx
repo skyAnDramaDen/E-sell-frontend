@@ -11,7 +11,7 @@ import {
     AllListings,
 } from "../../types/interfaces";
 
-import {get_listing, get_listings} from "../../services/listingsServices";
+import {get_listing, get_listings} from "../../services/listingsService";
 
 import { useAuth } from "../../hooks/useAuth";
 import {Ionicons} from "@expo/vector-icons";

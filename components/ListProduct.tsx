@@ -9,7 +9,7 @@ import {
     Product
 } from "../types/interfaces";
 
-import {delete_listing} from "../services/listingsServices";
+import {delete_listing} from "../services/listingsService";
 
 export default function ListProduct({ item }: { item: Listing }) {
     const router = useRouter();
