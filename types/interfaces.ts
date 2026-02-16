@@ -3,6 +3,7 @@ export interface UserDTO {
     name: string;
     email: string;
     phoneNumber?: string
+    profileImageUri?: string | null;
 }
 
 export interface RegisterRequestBody {
@@ -70,6 +71,7 @@ export interface User {
     updatedAt: Date;
     products?: Product[];
     phoneNumber?: string
+    profileImageUri?: string | null;
 }
 
 export interface GetUserResponseBody {

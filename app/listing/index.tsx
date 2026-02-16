@@ -29,6 +29,9 @@ import {Ionicons} from "@expo/vector-icons";
          async function load_list() {
              if (user) {
                  const listings  = await get_listings(user.id);
+                 if (listings.length === 0) {
+                     setListings([]);
+                 }
                  setListings(listings);
              }
          }
@@ -38,18 +41,26 @@ import {Ionicons} from "@expo/vector-icons";
 
      return (
          <View style={{ flex: 1, padding: 16 }}>
-             <TouchableOpacity onPress={() => {
-                 router.replace("/(tabs)" as any);
-             }}>
-                 <Ionicons name="home-outline" size={25} color="#333" />
-             </TouchableOpacity>
-             <FlatList
-                 data={listings}
-                 keyExtractor={(item) => item.product.id}
-                 renderItem={({ item }) => ( <ListingCard listing={item}
-                                                          onDelete={handleDelete}/> )}
-                 showsVerticalScrollIndicator={false}
-                 ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-             />
+             {
+                 listings.length > 0 ?  (
+                     <View>
+                         <TouchableOpacity onPress={() => {
+                             router.replace("/(tabs)" as any);
+                         }}>
+                             <Ionicons name="home-outline" size={25} color="#333" />
+                         </TouchableOpacity>
+                         <FlatList
+                             data={listings}
+                             keyExtractor={(item) => item.product.id}
+                             renderItem={({ item }) => ( <ListingCard listing={item}
+                                                                      onDelete={handleDelete}/> )}
+                             showsVerticalScrollIndicator={false}
+                             ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+                         />
+                     </View>
+                 ) : (
+                     <Text>You dont have any items listed for sale.</Text>
+                 )
+             }
          </View> );
 }

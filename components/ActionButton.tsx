@@ -6,7 +6,7 @@ function ActionButton ({ name, onPress, }: { name: string, onPress: () => void }
     return (
         <TouchableOpacity onPress={onPress}>
             <LinearGradient
-                colors={["#4B76C8", "#1F4691"]}
+                colors={["transparent", "transparent"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{
@@ -14,9 +14,10 @@ function ActionButton ({ name, onPress, }: { name: string, onPress: () => void }
                     borderRadius: 5,
                     padding: 5,
                     alignItems: "center",
+                    borderWidth: 1,
                 }}
             >
-                <Text>{name}</Text>
+                <Text className="text-lg">{name}</Text>
 
             </LinearGradient>
         </TouchableOpacity>

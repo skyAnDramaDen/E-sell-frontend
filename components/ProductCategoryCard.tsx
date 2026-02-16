@@ -19,7 +19,7 @@ export default function ProductCategoryCard({ category, imageURL, size }: { cate
             router.push(`/search?query=shoes&category=${category}`);
             // router.navigate("/sell");
         }}
-        style={{ width: 190, height: 190, }}
+        style={{ width: 182, height: 182, marginBottom: 10,}}
         >
             <Image source={{
                 uri: imageURL,

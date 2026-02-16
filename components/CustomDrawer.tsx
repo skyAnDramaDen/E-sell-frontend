@@ -35,15 +35,6 @@ export default function CustomDrawer(props: any) {
                 style={styles.drawerItem}
                 onPress={() => setShowModal(true)}
             />
-            {/*<Link href="/settings" asChild>*/}
-            {/*    <TouchableOpacity style={styles.row}>*/}
-            {/*        <Text style={styles.label}>Settings</Text>*/}
-            {/*    </TouchableOpacity>*/}
-            {/*</Link>*/}
-
-            {/*<TouchableOpacity style={styles.row} onPress={() => console.log("Logout pressed")}>*/}
-            {/*    <Text style={[styles.label, styles.logout]}>Logout</Text>*/}
-            {/*</TouchableOpacity>*/}
             <Modal visible={showModal} transparent animationType="fade" onRequestClose={() => setShowModal(false)}
             >
                 <View style={{
