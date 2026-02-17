@@ -4,6 +4,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 
+import {showMessage} from "react-native-flash-message";
+
 export default function LoginScreen() {
     const { login, loading, error } = useAuth();
     const [email, setEmail] = useState('');
@@ -20,10 +22,13 @@ export default function LoginScreen() {
                 setLoginLoading(false);
                 // router.replace("/(tabs)/index" as any); for the record this is wrong
                 router.replace("/(tabs)" as any);
+            } else {
+                showMessage({message: "Email and passwords do not match!", type: "danger",});
+                setLoginLoading(false);
             }
-
         } catch (err) {
-            console.error('Login failed:', err);
+            showMessage({message: "Login failed!", type: "danger",});
+            setLoginLoading(false);
         }
     };
 
@@ -60,8 +65,6 @@ export default function LoginScreen() {
                             onChangeText={setPassword}
                             secureTextEntry
                         />
-
-                        {error ? <Text className="text-red-500 mb-4">{error}</Text> : null}
 
                         <TouchableOpacity
                             className="bg-blue-500 p-4 rounded mb-4"

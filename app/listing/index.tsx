@@ -1,12 +1,14 @@
-import React, {useState, useEffect} from "react";
+ import React, {useState, useEffect} from "react";
 import {View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, FlatList} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from '@react-native-picker/picker';
 import {useLocalSearchParams, useRouter} from "expo-router";
 import ListingCard from "../../components/ListingCard";
+import { theme } from "../../src/theme/theme";
+import { styles as globalStyles } from "../../src/styles/styles";
 
-import {
+ import {
     Product,
     AllListings,
 } from "../../types/interfaces";
@@ -15,6 +17,7 @@ import {get_listing, get_listings} from "../../services/listingsService";
 
 import { useAuth } from "../../hooks/useAuth";
 import {Ionicons} from "@expo/vector-icons";
+ import MultiActionButton from "../../components/MultiActionButton";
  export default function Listings() {
      const router = useRouter();
      const { login, loading, error, user } = useAuth();
@@ -40,27 +43,23 @@ import {Ionicons} from "@expo/vector-icons";
      }, [user])
 
      return (
-         <View style={{ flex: 1, padding: 16 }}>
-             {
-                 listings.length > 0 ?  (
-                     <View>
-                         <TouchableOpacity onPress={() => {
-                             router.replace("/(tabs)" as any);
-                         }}>
-                             <Ionicons name="home-outline" size={25} color="#333" />
-                         </TouchableOpacity>
-                         <FlatList
-                             data={listings}
-                             keyExtractor={(item) => item.product.id}
-                             renderItem={({ item }) => ( <ListingCard listing={item}
-                                                                      onDelete={handleDelete}/> )}
-                             showsVerticalScrollIndicator={false}
-                             ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-                         />
-                     </View>
-                 ) : (
-                     <Text>You dont have any items listed for sale.</Text>
-                 )
-             }
-         </View> );
+         <View style={{ flex: 1, padding: theme.spacing.sm }}>
+             <MultiActionButton
+                 name="Back"
+                 icon="arrow-back"
+                 onPress={() => router.back()}
+             />
+
+             <FlatList
+                 data={listings}
+                 keyExtractor={(item) => item.product.id}
+                 renderItem={({ item }) => (
+                     <ListingCard listing={item} onDelete={handleDelete} />
+                 )}
+                 showsVerticalScrollIndicator={false}
+                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />}
+                 contentContainerStyle={{ paddingTop: theme.spacing.md, paddingBottom: theme.spacing.xl }}
+             />
+         </View>
+     )
 }

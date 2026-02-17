@@ -18,6 +18,27 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    container: {
+        flex: 1,
+        padding: theme.spacing.sm,
+        backgroundColor: theme.colors.background,
+    },
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        color: theme.colors.text,
+        // paddingVertical: theme.spacing.sm,
+    },
+    resultsContainer: {
+        flex: 1,
+        marginTop: theme.spacing.md,
+    },
+    placeholderText: {
+        fontSize: 16,
+        color: theme.colors.textLight,
+        marginBottom: theme.spacing.md,
+        fontStyle: 'italic',
+    },
     card: {
         width: '100%',
         backgroundColor: theme.colors.surface,
@@ -173,7 +194,7 @@ export const styles = StyleSheet.create({
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.lg,
         borderRadius: theme.borderRadius.lg,
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
         borderWidth: 1,
         borderColor: theme.colors.border,
         ...theme.shadows.sm,
@@ -190,7 +211,7 @@ export const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.lg,
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.sm,
-        marginBottom: theme.spacing.lg,
+        marginBottom: theme.spacing.sm,
         ...theme.shadows.md,
     },
     grid: {
@@ -201,6 +222,46 @@ export const styles = StyleSheet.create({
     gridItem: {
         width: '48%',
         marginBottom: 12,
+    },
+    listingTopSection: {
+        display: 'flex',
+        flexDirection: "row",
+        justifyContent: 'space-between',
+        marginBottom: theme.spacing.sm,
+    },
+
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        ...theme.shadows.sm,
+    },
+
+    multiActionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        // marginBottom: theme.spacing.sm,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        ...theme.shadows.sm,
+    },
+    backButtonText: {
+        marginLeft: theme.spacing.xs,
+        fontSize: 16,
+        color: theme.colors.text,
+        fontWeight: '500',
     },
     categoryCard: {
         width: '48%', // two columns with gap
@@ -231,8 +292,15 @@ export const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
+        justifyContent: 'space-between',
     },
+
+    // header: {
+    //     flexDirection: 'row',
+    //     justifyContent: 'flex-start',
+    //     marginBottom: theme.spacing.md,
+    // },
     menuButton: {
         padding: theme.spacing.sm,
         marginRight: theme.spacing.md,

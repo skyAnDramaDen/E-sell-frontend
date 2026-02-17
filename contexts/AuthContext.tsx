@@ -24,6 +24,7 @@ interface AuthContextType {
     reload_user: (id: string) => Promise<void>;
 }
 
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -71,6 +72,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setError(null);
 
             const response: AuthResponse = await login_request(body);
+            console.log("Auth context response", response);
+
             if (response.token && response.user) {
                 setUser(response.user);
                 setToken(response.token);
@@ -83,7 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             return response;
         } catch (error: any) {
             const fallback: AuthResponse = {
-                message: error.message || 'Login failed',
+                message: "The email and passwords do not match",
+                success: false,
             }
             setError(error.message || 'An error occurred');
             return fallback;
@@ -111,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setError(err.message || 'An error occurred');
             const fallback: AuthResponse = {
                 message: err.message || 'An error occurred',
+                success: false,
             };
             setError(fallback.message);
             return fallback;

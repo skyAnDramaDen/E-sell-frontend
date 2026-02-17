@@ -77,7 +77,6 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
 
                             <Pressable onPress={async () => {
                                 setShowModal(false)
-                                // call your delete function here
                                 const success = await delete_listing(product.id);
 
                                 if (success) {
@@ -107,7 +106,7 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
                     </View>
                 </Modal>
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>Title: {product.name} </Text>
+                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>Name: {product.name} </Text>
                     <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>Price: {product.price} </Text>
                 </View>
             </View>

@@ -15,6 +15,9 @@ import {Ionicons} from "@expo/vector-icons";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 import { useFocusEffect } from "expo-router";
+import { useAuth } from "../../../hooks/useAuth";
+import { styles as globalStyles } from "../../../src/styles/styles";
+import { theme } from "../../../src/theme/theme";
 
 export default function Search() {
     const router = useRouter();
@@ -24,6 +27,7 @@ export default function Search() {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const params = useLocalSearchParams();
     const [category, setCategory] = useState(params.category as string || "");
+    const { login, loading, error, user } = useAuth();
 
     useEffect(() => {
         if (query.length < 3 && !category) {
@@ -33,7 +37,10 @@ export default function Search() {
 
         const fetchData = async () => {
             try {
-                const found_listings = await search_listings(query, category);
+                let found_listings;
+                if (user) {
+                    found_listings = await search_listings(query, user.id, category);
+                }
                 setListings(found_listings);
             } catch (error) {
 
@@ -44,126 +51,54 @@ export default function Search() {
     }, [query, category])
 
     return (
-        <View style={styles.container}>
-            <View style={{ flexDirection: "row", justifyContent: "flex-start", marginBottom: 10 }}>
-                <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                    <Ionicons name="menu" size={28} />
+        <View style={globalStyles.container}>
+            <View style={globalStyles.header}>
+                <TouchableOpacity
+                    onPress={() => navigation.openDrawer()}
+                    style={globalStyles.iconButton}
+                >
+                    <Ionicons name="menu" size={28} color={theme.colors.text} />
                 </TouchableOpacity>
             </View>
-            <TextInput
-                placeholder="Search"
-                placeholderTextColor="#888"
-                value={query}
-                onChangeText={async (text) => {
-                    setQuery(text);
-                }}
-                style={styles.searchInput}
-            />
-            {/*<View>*/}
-            {/*    <Picker*/}
-            {/*        selectedValue={selectedTop?.id ?? ""}*/}
-            {/*        onValueChange={(catID) => {*/}
-            {/*            const category = taxonomy.find((cat) => cat.id === catID);*/}
-            {/*            setSelectedTop(category);*/}
-            {/*        }}*/}
-            {/*        // style={{*/}
-            {/*        //     height: 50*/}
-            {/*        // }}*/}
-            {/*        style={{ marginVertical: 8, width: 300 }}*/}
-            {/*    >*/}
-            {/*        <Picker.Item label = "Select a category" value= "" color="#888" />*/}
-            {/*        {*/}
-            {/*            taxonomy.map((subCat) => (*/}
-            {/*                <Picker.Item key = {subCat.id} label = {subCat.name} value = {subCat.id} color="#000" />*/}
-            {/*            ))*/}
-            {/*        }*/}
 
-            {/*    </Picker>*/}
-            {/*</View>*/}
-            <View style={styles.resultsContainer}>
+            <View style={globalStyles.searchBar}>
+                <Ionicons
+                    name="search"
+                    size={20}
+                    color={theme.colors.textLight}
+                    style={globalStyles.searchIcon}
+                />
+                <TextInput
+                    placeholder="Search"
+                    placeholderTextColor={theme.colors.textLight}
+                    value={query}
+                    onChangeText={setQuery}
+                    style={globalStyles.searchInput}
+                />
+            </View>
+
+            <View style={globalStyles.resultsContainer}>
                 {query.length < 1 && !category ? (
-                    <Text style={styles.placeholderText}>Start typing to search…</Text>
+                    <Text style={globalStyles.placeholderText}>Start typing to search…</Text>
                 ) : (
-                    <Text style={styles.placeholderText}>
+                    <Text style={globalStyles.placeholderText}>
                         Showing results for "{query.length > 0 ? query : category}"
                     </Text>
                 )}
 
-                {
-                    listings.length > 0 && (
-                        <FlatList
-                            data={listings}
-                            keyExtractor={(item) => item.product.id}
-                            renderItem={({ item }) => (
-                                <ListProduct item={item} key={item.product.id}>
-
-                                </ListProduct>
-                            )}
-                            showsVerticalScrollIndicator={false}
-                            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-                        />
-                    )
-                }
+                {listings.length > 0 && (
+                    <FlatList
+                        data={listings}
+                        keyExtractor={(item) => item.product.id}
+                        renderItem={({ item }) => <ListProduct item={item} />}
+                        showsVerticalScrollIndicator={false}
+                        ItemSeparatorComponent={() => (
+                            <View style={{ height: theme.spacing.md }} />
+                        )}
+                        contentContainerStyle={{ paddingTop: theme.spacing.sm }}
+                    />
+                )}
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: "#fff",
-    },
-    searchInput: {
-        backgroundColor: "#f2f2f2",
-        padding: 14,
-        borderRadius: 10,
-        fontSize: 16,
-        color: "#000",
-    },
-    resultsContainer: {
-        flex: 1,
-        marginTop: 20,
-    },
-    placeholderText: {
-        fontSize: 16,
-        color: "#666",
-    },
-    bottomButtons: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 20,
-    },
-    // resultsContainer: {
-    //     marginTop: 10,
-    //     paddingHorizontal: 16,
-    // },
-    //
-    // placeholderText: {
-    //     color: "#888",
-    //     marginBottom: 8,
-    // },
-
-    resultsList: {
-        backgroundColor: "#fff",
-        borderRadius: 8,
-        paddingVertical: 8,
-        elevation: 3,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-    },
-
-    resultItem: {
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee",
-    },
-
-    resultText: {
-        fontSize: 16,
-    },
-
-});

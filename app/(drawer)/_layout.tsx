@@ -3,13 +3,11 @@ import CustomDrawer from "../../components/CustomDrawer";
 
 export default function DrawerLayout() {
     return (
-        // <Drawer
-        //     screenOptions={{
-        //         headerShown: false,
-        //     }}
-        // />
     <Drawer
         drawerContent={(props) => <CustomDrawer {...props} />}
+        screenOptions={{
+            headerShown: false,
+        }}
     >
         <Drawer.Screen
             name="(tabs)"
@@ -24,6 +22,15 @@ export default function DrawerLayout() {
             name="profile"
             options={{
                 title: 'Profile',
+                drawerItemStyle: { display: "contents" },
+                headerShown: false,
+            }}
+        />
+
+        <Drawer.Screen
+            name="settings"
+            options={{
+                title: 'Settings',
                 drawerItemStyle: { display: "contents" },
                 headerShown: false,
             }}

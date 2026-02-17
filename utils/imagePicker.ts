@@ -23,28 +23,30 @@ export const pickImage = async () => {
     }
 };
 
-export const pickOneImage = async (setModal: (visible: boolean) => void) => {
-    setTimeout(async () => {
-        setModal(false);
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-            alert("Sorry, we need camera roll permissions to make this work!");
-            return;
-        }
+export const pickOneImage = async (): Promise<ImagePicker.ImagePickerResult | any> => {
+    return new Promise((resolve) => {
+        setTimeout(async () => {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== "granted") {
+                alert("Sorry, we need camera roll permissions to make this work!");
+                return;
+            }
 
-        let result;
-        result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-            allowsMultipleSelection: false,
-        });
+            let result;
+            result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsMultipleSelection: false,
+            });
 
-        console.log(result)
 
-        if (!result.canceled) {
-            return(result);
-        }
-    }, 700)
+            if (!result.canceled) {
+                resolve(result);
+            } else {
+                resolve(null);
+            }
+        }, 600)
+    })
 };
 
 export const takePhoto = async () => {

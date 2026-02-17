@@ -1,8 +1,11 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import {Text, View, TouchableOpacity, StyleSheet} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import {Ionicons} from "@expo/vector-icons";
+import {theme} from "../src/theme/theme";
+import { styles } from "../src/styles/styles";
 
-function ActionButton ({ name, onPress, }: { name: string, onPress: () => void }) {
+function ActionButton ({ name, onPress,}: { name: string, onPress: () => void, }) {
     return (
         <TouchableOpacity onPress={onPress}>
             <LinearGradient

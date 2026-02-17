@@ -112,6 +112,7 @@ export default function SellScreen() {
             formData.append("subCategory", selectedSecond.name);
             formData.append("topCategoryId", selectedTop.id.toString());
             formData.append("topCategory", selectedTop.name);
+            formData.append("location", address ? address : "" );
 
             if (selectedThird) {
                 formData.append("lowestCategoryId", selectedThird.id.toString());
@@ -394,7 +395,9 @@ export default function SellScreen() {
             </View>
 
             <TouchableOpacity
-                onPress={handleSubmit}
+                onPress={async () => {
+                    await handleSubmit();
+                }}
                 style={styles.submitButtonWrapper}
                 disabled={
                     !images.length ||

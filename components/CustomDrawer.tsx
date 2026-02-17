@@ -27,7 +27,7 @@ export default function CustomDrawer(props: any) {
                 label="Settings"
                 labelStyle={styles.label}
                 style={styles.drawerItem}
-                onPress={() => props.navigation.navigate("profile")}
+                onPress={() => router.push("/(drawer)/settings" as any)}
             />
             <DrawerItem
                 label="Logout"
