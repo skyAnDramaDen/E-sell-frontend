@@ -407,7 +407,7 @@ export default function SellScreen() {
                     !title ||
                     !condition ||
                     !price ||
-                    !location
+                    !address
                 }
                 activeOpacity={0.8}
             >

@@ -1,5 +1,5 @@
 import { api } from "./authService";
-import {UserDTO, EditUserPayload} from "../types/interfaces";
+import {UserDTO, EditUserPayload, ChangePasswordPayload} from "../types/interfaces";
 
 export async function edit_user (payload: FormData) {
     const response = await api.post("/user/edit", payload);
@@ -8,5 +8,10 @@ export async function edit_user (payload: FormData) {
 
 export async function get_user (id: string) {
     const response = await api.get(`/user/${id}`);
+    return response.data;
+}
+
+export async function change_user_password (payload: ChangePasswordPayload) {
+    const response = await api.post("/user/change_user_password", payload);
     return response.data;
 }

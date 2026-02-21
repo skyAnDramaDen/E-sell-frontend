@@ -48,6 +48,12 @@ export default function Profile() {
 
     const handleSubmit = async () => {
         const formData = new FormData();
+        if (userData.phoneNumber) {
+            if (userData.phoneNumber .length < 11) {
+                showMessage({message: "Pnone number is less than eleven digits!", type: "danger",});
+                return;
+            }
+        }
 
         if (image) {
             formData.append("image", {
@@ -75,6 +81,8 @@ export default function Profile() {
             });
             setEditMode(false);
             showMessage({message: "Profile updated successfully", type: "success",});
+        } else {
+            showMessage({message: "Failed to update profile!", type: "danger",});
         }
     };
 

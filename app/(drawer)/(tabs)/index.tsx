@@ -54,7 +54,7 @@ export default function Index() {
                         imageURL="https://images.pexels.com/photos/1105379/pexels-photo-1105379.jpeg"
                     />
                     <ProductCategoryCard
-                        category="Phones"
+                        category="Mobile Phones"
                         imageURL="https://images.pexels.com/photos/10791677/pexels-photo-10791677.jpeg"
                     />
                     <ProductCategoryCard
@@ -62,7 +62,7 @@ export default function Index() {
                         imageURL="https://images.unsplash.com/photo-1585386959984-a41552231692"
                     />
                     <ProductCategoryCard
-                        category="Audio Equipment"
+                        category="Audio"
                         imageURL="https://images.pexels.com/photos/14935011/pexels-photo-14935011.jpeg"
                     />
                     <ProductCategoryCard

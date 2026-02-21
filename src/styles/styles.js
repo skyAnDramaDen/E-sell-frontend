@@ -2,16 +2,10 @@ import { theme } from "../theme/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    // scrollContainer: {
-    //     flexGrow: 1,
-    //     paddingHorizontal: theme.spacing.lg,
-    //     paddingTop: theme.spacing.lg,
-    //     paddingBottom: theme.spacing.xl,
-    // },
-// here
     scrollContainer: {
         padding: theme.spacing.sm,
         paddingBottom: theme.spacing.xl,
+        width: '100%'
     },
     centered: {
         // borderWidth: 1,
@@ -207,6 +201,15 @@ export const styles = StyleSheet.create({
         color: theme.colors.textLight,
     },
     section: {
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.sm,
+        marginBottom: theme.spacing.sm,
+        ...theme.shadows.md,
+        width: "100%",
+    },
+    section2: {
         backgroundColor: theme.colors.surface,
         borderRadius: theme.borderRadius.lg,
         paddingVertical: theme.spacing.md,

@@ -8,6 +8,7 @@ import {
 } from "../types/interfaces";
 
 import {delete_listing} from "../services/listingsService";
+import TextTicker from 'react-native-text-ticker';
 
 
 export default function ListingCard({listing, onDelete}: { listing: Listing, onDelete: (productId: string) => void }) {
@@ -106,8 +107,9 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
                     </View>
                 </Modal>
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>Name: {product.name} </Text>
-                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>Price: {product.price} </Text>
+                    {/*<Text style={{fontSize: 18, fontWeight: "600", marginTop: 8, overflow: "scroll"}}>{product.name} </Text>*/}
+                    <TextTicker style={{ fontSize: 18, fontWeight: "600", marginTop: 8, width: 120 }} duration={6000} loop bounce={false} repeatSpacer={50} marqueeDelay={1000} > {product.name} </TextTicker>
+                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>£{product.price} </Text>
                 </View>
             </View>
         </Pressable>

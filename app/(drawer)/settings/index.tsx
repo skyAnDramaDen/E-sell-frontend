@@ -23,8 +23,6 @@ type Props = {
     navigation: SettingsScreenNavigationProp;
 };
 
-
-
 const SettingItem = ({
                          icon,
                          label,
@@ -98,14 +96,14 @@ const Index = () => {
                         <SettingItem
                             icon="person-outline"
                             label="Profile Information"
-                            onPress={() => navigation.navigate('Profile')}
+                            onPress={() => router.push('/profile')}
                             showChevron={false}
                         />
                         <View style={localStyles.divider} />
                         <SettingItem
                             icon="lock-closed-outline"
                             label="Change Password"
-                            onPress={() => navigation.navigate('ChangePassword')}
+                            onPress={() => router.push("/settings/changePassword")}
                             showChevron={false}
                         />
                     </View>

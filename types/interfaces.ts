@@ -128,3 +128,9 @@ export interface GetUserResponseBody {
     user?: User;
     success: boolean;
 }
+
+export interface ChangePasswordPayload {
+    id: string;
+    password1: string;
+    password2: string;
+}

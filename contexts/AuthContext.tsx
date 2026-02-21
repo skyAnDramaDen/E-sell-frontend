@@ -72,7 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setError(null);
 
             const response: AuthResponse = await login_request(body);
-            console.log("Auth context response", response);
 
             if (response.token && response.user) {
                 setUser(response.user);
