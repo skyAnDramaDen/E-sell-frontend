@@ -83,14 +83,15 @@ export default function RegisterScreen() {
                 return;
             }
             setRegisterLoading(true);
-            // const result: AuthResponse = await register({ name, email, password });
-            // setRegisterLoading(false);
-            //
-            // if (result.token && result.user) {
-            //     router.replace("/");
-            // } else {
-            //     showMessage({ message: `${result.message}`, type: "danger" });
-            // }
+            let refined_name = name.trim().toLowerCase();
+            const result: AuthResponse = await register({ name: refined_name, email, password });
+            setRegisterLoading(false);
+
+            if (result.token && result.user) {
+                router.replace("/");
+            } else {
+                showMessage({ message: `${result.message}`, type: "danger" });
+            }
 
         } catch (err) {
             setRegisterLoading(false);
