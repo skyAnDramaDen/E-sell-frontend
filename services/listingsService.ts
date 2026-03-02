@@ -1,17 +1,17 @@
 import { api } from "./authService";
 
 export async function get_listing(id: string) {
-    const response = await api.get(`/listing/${id}`);
+    const response = await api.post("/listing", {id: id});
     return response.data;
 }
 
 export async function get_listings(id: string) {
-    const response = await api.get(`/listing/all_listings/${id}`);
+    const response = await api.post("/listing/all_listings", {id: id});
     return response.data;
 }
 
 export async function delete_listing(id: string) {
-    const response = await api.delete(`/listing/${id}`);
+    const response = await api.post("/listing", {id: id});
     return response.data;
 }
 

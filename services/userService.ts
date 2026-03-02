@@ -7,7 +7,7 @@ export async function edit_user (payload: FormData) {
 }
 
 export async function get_user (id: string) {
-    const response = await api.get(`/user/${id}`);
+    const response = await api.post("/user", {id: id});
     return response.data;
 }
 
