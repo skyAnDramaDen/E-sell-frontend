@@ -15,9 +15,31 @@ export async function delete_listing(id: string) {
     return response.data;
 }
 
-export async function search_listings(search: string, id: string, category?: string) {
-    const response = await api.get(`/listing?search=${search}&category=${category}&id=${id}`);
-    return response.data;
+export async function search_listings(id: string, category: string | null, search: string | null) {
+    let payload;
+    let response;
+
+    if (category != null || category != undefined && id != null) {
+        payload = {
+            category: category,
+            id: id,
+        };
+
+        response = await api.post("/listing/search_listings_by_category", {payload: payload});
+
+    } else if (search != null || search != undefined && id != null) {
+        payload = {
+            search: search,
+            id: id,
+        };
+        response = await api.post("/listing/search_listings_by_search_params", {payload: payload});
+    }
+
+    if (response) {
+        return response.data;
+    } else {
+        return null;
+    }
 }
 
 export async function create_listing(formData: FormData) {

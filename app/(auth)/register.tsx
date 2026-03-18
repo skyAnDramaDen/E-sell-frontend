@@ -1,20 +1,29 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ActivityIndicator,
+    StyleSheet,
+    ViewStyle,
+    TextStyle
+} from 'react-native';
 
 import { useAuth } from "../../hooks/useAuth";
 import {AuthResponse} from "../../types/interfaces";
-
 import { useRouter } from "expo-router";
 import {showMessage} from "react-native-flash-message";
 import LottieView from "lottie-react-native";
 
 import { validatePassword } from "../../utils/passwordVerifier";
-
 import { username_verifier, email_verifier } from "../../utils/nameVerifier";
+
+import { theme } from "../../src/theme/theme";
 
 export default function RegisterScreen() {
     const { register, loading, error } = useAuth();
-    const [name, setName] = useState('');
+    const [username, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [registerLoading, setRegisterLoading] = useState(false);
@@ -22,7 +31,7 @@ export default function RegisterScreen() {
 
     const handleSubmit = async () => {
         try {
-            if (!password || !name || !email) {
+            if (!password || !username || !email) {
                 showMessage({message: "Please make sure to include all fields", type: "warning", });
                 return;
             }
@@ -34,7 +43,7 @@ export default function RegisterScreen() {
                 return;
             }
 
-            const nameIsValid = username_verifier(name);
+            const nameIsValid = username_verifier(username);
 
             if (nameIsValid.hasInvalidSymbol) {
                 showMessage({message: "Username should not contain symbols or space characters!", type: "warning", });
@@ -83,8 +92,10 @@ export default function RegisterScreen() {
                 return;
             }
             setRegisterLoading(true);
-            let refined_name = name.trim().toLowerCase();
-            const result: AuthResponse = await register({ name: refined_name, email, password });
+            let refined_username = username.trim().toLowerCase();
+
+            const result: AuthResponse = await register({ username: refined_username, email, password: password.trim() });
+
             setRegisterLoading(false);
 
             if (result.token && result.user) {
@@ -95,66 +106,147 @@ export default function RegisterScreen() {
 
         } catch (err) {
             setRegisterLoading(false);
-            console.error('Register failed:', err);
         }
     };
 
+    if (loading) {
+        return (
+            <View style={localStyles.loadingContainer}>
+                <LottieView
+                    source={require("../../assets/loading.json")}
+                    autoPlay
+                    loop
+                    style={{ width: 200, height: 200 }}
+                />
+                <Text style={localStyles.loadingText as TextStyle}>Hang tight...</Text>
+            </View>
+        );
+    }
+
     return (
-        <View className="flex-1 justify-center px-6">
-            {
-                registerLoading ? (
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                        <Text>Hang tight...</Text>
-                        <LottieView
-                            source={require("../../assets/loading.json")}
-                            autoPlay
-                            loop
-                            style={{ width: 200, height: 200 }}
-                        />
-                    </View>
-                ) : (
-                    <View>
-                        <Text className="text-2xl font-bold mb-6">Register</Text>
+        <View style={localStyles.outerContainer}>
+            <View style={localStyles.formWrapper}>
+                <Text style={localStyles.title as TextStyle}>Register</Text>
 
-                        <Text className="mb-2">Name</Text>
-                        <TextInput
-                            className="border border-gray-300 p-3 rounded mb-4"
-                            value={name}
-                            onChangeText={setName}
-                        />
+                <Text style={localStyles.label as TextStyle}>Username</Text>
+                <TextInput
+                    style={localStyles.input}
+                    value={username}
+                    onChangeText={setUserName}
+                    placeholder="johndoe"
+                    placeholderTextColor={theme.colors.textLight}
+                />
 
-                        <Text className="mb-2">Email</Text>
-                        <TextInput
-                            className="border border-gray-300 p-3 rounded mb-4"
-                            value={email}
-                            onChangeText={setEmail}
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                        />
+                <Text style={localStyles.label as TextStyle}>Email</Text>
+                <TextInput
+                    style={localStyles.input}
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    placeholder="your@email.com"
+                    placeholderTextColor={theme.colors.textLight}
+                />
 
-                        <Text className="mb-2">Password</Text>
-                        <TextInput
-                            className="border border-gray-300 p-3 rounded mb-4"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry
-                        />
+                <Text style={localStyles.label as TextStyle}>Password</Text>
+                <TextInput
+                    style={localStyles.input}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholder="••••••••"
+                    placeholderTextColor={theme.colors.textLight}
+                />
 
-                        <TouchableOpacity
-                            className="bg-green-500 p-4 rounded mb-4"
-                            onPress={handleSubmit}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <ActivityIndicator color="white" />
-                            ) : (
-                                <Text className="text-white text-center">Register</Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                )
-            }
-
+                <TouchableOpacity
+                    style={[localStyles.button, loading && localStyles.buttonDisabled]}
+                    onPress={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={localStyles.buttonText}>Register</Text>
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={localStyles.registerLink as ViewStyle}
+                    onPress={() => router.back()}
+                    disabled={loading}
+                >
+                    <Text style={localStyles.registerText as TextStyle}>
+                        <Text style={localStyles.registerHighlight as TextStyle}>Back to login</Text>
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
-    );
+    )
 }
+
+
+const localStyles = StyleSheet.create({
+    registerLink: {
+        alignSelf: 'center',
+    },
+    registerText: {
+        // ...theme.typography.body,
+        color: theme.colors.text,
+    },
+    registerHighlight: {
+        color: theme.colors.primary,
+        textDecorationLine: 'underline',
+    },
+    outerContainer: {
+        flex: 1,
+        paddingHorizontal: theme.spacing.md,
+        marginTop: theme.spacing.xl * 5,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        ...theme.typography.body,
+        color: theme.colors.text,
+        marginTop: theme.spacing.md,
+    },
+    formWrapper: {},
+    title: {
+        ...theme.typography.h2,
+        color: theme.colors.text,
+        marginBottom: theme.spacing.lg,
+    },
+    label: {
+        ...theme.typography.caption,
+        color: theme.colors.textLight,
+        marginBottom: theme.spacing.xs,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        borderRadius: theme.borderRadius.sm,
+        padding: theme.spacing.md,
+        marginBottom: theme.spacing.md,
+        fontSize: theme.typography.body.fontSize,
+        color: theme.colors.text,
+        backgroundColor: theme.colors.surface,
+    },
+    button: {
+        backgroundColor: theme.colors.success,
+        padding: theme.spacing.md,
+        borderRadius: theme.borderRadius.lg,
+        alignItems: 'center',
+        marginBottom: theme.spacing.md,
+        ...theme.shadows.sm,
+    },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: theme.typography.body.fontSize,
+        fontWeight: '600',
+        textAlign: 'center',
+    },
+});

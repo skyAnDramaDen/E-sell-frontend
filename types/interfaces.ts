@@ -1,15 +1,16 @@
 import React from "react";
+import {Socket} from "socket.io-client";
 
 export interface UserDTO {
     id: string;
-    name: string;
+    username: string;
     email: string;
     phoneNumber?: string
     profileImageUri?: string | null;
 }
 
 export interface RegisterRequestBody {
-    name: string;
+    username: string;
     email: string;
     password: string;
 }
@@ -83,6 +84,7 @@ export interface ProductAndSellerResponseBody {
     location: string | null;
     sellerName: string;
     sellerPhoneNumber: string;
+    sellerId?: string;
     message?: string;
     images: string[]
     success: boolean;
@@ -113,7 +115,7 @@ export type AllListings = Listing[];
 
 export interface User {
     id: string;
-    name: string;
+    username: string;
     email: string;
     password: string;
     role: "user" | "admin" | "moderator";
@@ -122,6 +124,20 @@ export interface User {
     products?: Product[];
     phoneNumber?: string
     profileImageUri?: string | null;
+}
+
+export interface AuthContextType {
+    user: UserDTO | null;
+    token: string | null;
+    loading: boolean;
+    error: string | null;
+    login: (body: LoginRequestBody) => Promise<AuthResponse>;
+    register: (body: RegisterRequestBody) => Promise<AuthResponse>;
+    logout: () => Promise<void>;
+    loadStorage: () => Promise<boolean>;
+    reload_user: (id: string) => Promise<void>;
+    setUser: (user: any) => void;
+    socket: Socket | null;
 }
 
 export interface GetUserResponseBody {
@@ -133,4 +149,69 @@ export interface ChangePasswordPayload {
     id: string;
     password1: string;
     password2: string;
+}
+
+export interface Message {
+    id: string;
+    content: string;
+    senderId: string;
+    senderName: string;
+    conversationId: string;
+    receiverName: string;
+    receiverId: string;
+    read: boolean;
+    createdAt?: string;
+    sender?: User;
+    receiver?: User;
+    conversation?: Conversation;
+}
+
+export interface SaveMessageResponseBody {
+    content: string;
+    senderId: string;
+    conversationId: string;
+    read: boolean;
+}
+
+export interface Conversation {
+    id: string;
+    type: ConversationType;
+    shopId?: string | undefined;
+    sellerId?: string;
+    createdAt: Date;
+    messages: Message[]
+    participant: ConversationParticipant[];
+}
+
+export interface ConversationParticipant {
+    id: string;
+    conversationId: string;
+    userId: string;
+    conversation?: Conversation;
+    user?: User;
+    name: string;
+}
+export type ConversationParticipants = ConversationParticipant[];
+
+export enum ConversationType {
+    SELLER_BUYER = "SELLER_BUYER",
+    SHOP_USER = "SHOP_USER",
+    SUPPORT = "SUPPORT",
+}
+
+export interface CreateConversationParticipantPayload {
+    conversationId: string;
+    userId: string;
+    name: string;
+}
+
+export type CreateConversationParticipantPayloads = CreateConversationParticipantPayload[];
+
+export interface CreateConversationPayload {
+    type: ConversationType;
+    sellerName?: string;
+    sellerId?: string;
+    buyerId?: string;
+    buyerName?: string;
+    shopId?: string;
 }

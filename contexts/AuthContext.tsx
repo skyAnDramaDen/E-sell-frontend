@@ -1,29 +1,19 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, {createContext, useState, useEffect, ReactNode, useMemo} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation, useRouter} from "expo-router";
+import { io, Socket } from "socket.io-client";
 
+import { base_url } from "../src/config/local";
 
 import {
     UserDTO,
     AuthResponse,
     LoginRequestBody,
-    RegisterRequestBody
+    RegisterRequestBody,
+    AuthContextType,
 } from "../types/interfaces";
 import { login_request, register_request } from "../services/authService";
 import { get_user } from "../services/userService";
-
-interface AuthContextType {
-    user: UserDTO | null;
-    token: string | null;
-    loading: boolean;
-    error: string | null;
-    login: (body: LoginRequestBody) => Promise<AuthResponse>;
-    register: (body: RegisterRequestBody) => Promise<AuthResponse>;
-    logout: () => Promise<void>;
-    loadStorage: () => Promise<boolean>;
-    reload_user: (id: string) => Promise<void>;
-}
-
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -33,10 +23,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        loadStorage();
-    }, []);
+        const initSocket = async () => {
+            await loadStorage();
+            if (!user) {
+                return;
+            } else if (user && token && !socket) {
+                try {
+                    const newSocket = io(base_url, {
+                        autoConnect: false,
+                        auth: { token },
+                    });
+
+                    newSocket.on("connect", () => {
+                        console.log("✅ Connected with socket id:", newSocket.id);
+                    });
+                    newSocket.on("connect_error", (err) => {
+                        console.log("❌ Socket connection error:", err);
+                    });
+                    newSocket.on("disconnect", () => {
+                        console.log("🔌 Disconnected");
+                    });
+
+                    newSocket.connect();
+                    setSocket(newSocket);
+                } catch (e) {
+                    console.error("❌ Socket creation exception:", e);
+                }
+            } else {
+                return;
+            }
+        };
+        initSocket();
+
+        // return () => {
+        //     if (socket) {
+        //         socket.disconnect();
+        //         setSocket(null);
+        //     }
+        // };
+    }, [user, token]);
 
     const loadStorage = async (): Promise<boolean> => {
         try {
@@ -99,7 +127,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             setLoading(true);
             setError(null);
+
             const response: AuthResponse = await register_request(body);
+
             if (response.token && response.user) {
                 setUser(response.user);
                 setToken(response.token);
@@ -126,25 +156,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = async () => {
         setUser(null);
         setToken(null);
+        setSocket(null);
         await AsyncStorage.removeItem('user');
         await AsyncStorage.removeItem('token');
-        router.replace('/login');
+        setTimeout( () => {
+            router.replace('/login');
+        }, 500)
     };
 
+    const authValue = useMemo(() => ({
+        user,
+        token,
+        loading,
+        error,
+        login,
+        register,
+        logout,
+        loadStorage,
+        reload_user,
+        setUser,
+        socket,
+    }), [
+        user,
+        token,
+        loading,
+        error,
+        socket,
+    ]);
 
     return (
         <AuthContext.Provider
-            value={{
-                user,
-                token,
-                loading,
-                error,
-                login,
-                register,
-                logout,
-                loadStorage,
-                reload_user,
-            }}
+            value={authValue}
         >
             {children}
         </AuthContext.Provider>

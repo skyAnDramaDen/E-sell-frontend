@@ -1,29 +1,25 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import {Text, View, TouchableOpacity, StyleSheet, ViewStyle, TextStyle} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+
+import {theme} from "../src/theme/theme";
+import {styles} from "../src/styles/styles";
+import {ImageStyle} from "expo-image";
 
 function SellButton ({ onPress }: { onPress: () => void }) {
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
             <LinearGradient
-                colors={["transparent", "transparent"]}
+                colors={["#fff", "#fff"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={{
-                    flexDirection: "row",
-                    borderRadius: 5,
-                    padding: 5,
-                    alignItems: "center",
-                    borderWidth: 1,
-                    marginRight: 5,
-                }}
+                style={[styles.gradient as ImageStyle, { marginRight: theme.spacing.sm }]}
             >
-                <Text className="text-lg">+</Text>
-                <Text className="text-lg">Sell</Text>
-
+                <Text style={[styles.text as TextStyle, styles.plus as TextStyle]}>+</Text>
+                <Text style={styles.text as TextStyle}>Sell</Text>
             </LinearGradient>
         </TouchableOpacity>
-    )
+    );
 }
 
 export default SellButton;

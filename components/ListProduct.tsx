@@ -1,6 +1,16 @@
-import React from "react";
-import {useState, useEffect} from "react";
-import {Text, View, TouchableOpacity, FlatList, Image, Pressable, Modal, StyleSheet} from "react-native";
+import React, {useState, useEffect} from "react";
+import {
+    Text,
+    View,
+    TouchableOpacity,
+    FlatList,
+    Image,
+    Pressable,
+    Modal,
+    StyleSheet,
+    StyleProp,
+    ViewStyle
+} from "react-native";
 import {LinearGradient} from "expo-linear-gradient";
 import {useLocalSearchParams, useRouter} from "expo-router";
 
@@ -9,18 +19,18 @@ import {
     Product
 } from "../types/interfaces";
 
-import {delete_listing} from "../services/listingsService";
-
-export default function ListProduct({ item }: { item: Listing }) {
+export default function ListProduct({ item, width }: { item: Listing, width?: number }) {
     const router = useRouter();
     return (
         <TouchableOpacity
-            style={styles.container}
-            onPress={() => router.push(`/listing/${item.product.id}`)}
+            style={[styles.container, { width }]}
+            onPress={() => {
+                router.push(`/listing/${item.product.id}`);
+            }}
         >
             <Image
                 source={{ uri: item.images[0] }}
-                style={styles.image}
+                style={styles.list_product_image}
             />
 
             <View style={styles.details}>
@@ -34,7 +44,7 @@ export default function ListProduct({ item }: { item: Listing }) {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
+        flexDirection: "column",
         padding: 12,
         alignItems: "center",
         backgroundColor: "#fff",
@@ -43,9 +53,9 @@ const styles = StyleSheet.create({
         gap: 12,
     },
 
-    image: {
-        width: 60,
-        height: 60,
+    list_product_image: {
+        width: 170,
+        height: 170,
         borderRadius: 8,
         backgroundColor: "#eee",
     },

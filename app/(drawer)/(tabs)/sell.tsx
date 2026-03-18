@@ -1,20 +1,30 @@
-import React, {useEffect, useState, useRef} from "react";
-import {View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, Pressable, Animated } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import React, {useState, useRef} from "react";
+import {
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    TextInput,
+    Animated,
+    ViewStyle, TextStyle
+} from "react-native";
+
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from '@react-native-picker/picker';
 import { useRouter, useNavigation } from "expo-router";
 import { useAuth } from "../../../hooks/useAuth";
 import { styles } from "../../../src/styles/styles";
+
 import {
     CategoryNode
 } from "../../../types/interfaces";
 
-import { base_url } from "../../../src/config/local";
+
 import { useFocusEffect } from "expo-router";
 
 import taxonomy from "../../../assets/taxonomy.json";
-import { useLocation } from "../../../hooks/useLocation";
+
 
 import * as Location from "expo-location";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
@@ -22,11 +32,13 @@ import {Ionicons} from "@expo/vector-icons";
 import { pickImage, takePhoto } from "../../../utils/imagePicker";
 import { create_listing } from "../../../services/listingsService";
 import { theme } from "../../../src/theme/theme";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {ImageStyle} from "expo-image";
 
 export default function SellScreen() {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const router = useRouter();
-    const { login, loading, error, user } = useAuth();
+    const { user } = useAuth();
     const [images, setImages] = useState<string[]>([]);
 
     const [selectedTop, setSelectedTop] = useState<CategoryNode | null | undefined>(null);
@@ -37,7 +49,6 @@ export default function SellScreen() {
     const [title, setTitle] = useState<string>("");
     const [condition, setCondition] = useState<string | null>(null);
     const [price, setPrice] = useState<number | null>(0);
-    const [availability , setAvailability] = useState<boolean | null>(true);
     const [location, setLocation] = useState<string>("");
 
     const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -46,9 +57,15 @@ export default function SellScreen() {
     const [useLocationError, setUseLocationError] = useState<string | null>(null);
     const [useLocationLoading, setUseLocationLoading] = useState(false);
 
-
     const galleryButtonScale = useRef(new Animated.Value(1)).current;
     const cameraButtonScale = useRef(new Animated.Value(1)).current;
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'New', value: 'new' },
+        { label: 'Used - Like New', value: 'like_new' },
+    ]);
 
     useFocusEffect( React.useCallback(() => {
         return () => {
@@ -138,289 +155,309 @@ export default function SellScreen() {
     };
 
     return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContainer}
+        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+                      edges={["top", "left", "right"]}
         >
-            <View style={styles.header}>
-                <TouchableOpacity
-                    onPress={() => navigation.openDrawer()}
-                    style={styles.menuButton}
-                    activeOpacity={0.7}
-                >
-                    <Ionicons name="menu" size={25} color={theme.colors.text} />
-                </TouchableOpacity>
-                <LinearGradient
-                    colors={[theme.colors.primary, theme.colors.secondary]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.titleGradient}
-                >
-                    <Text style={styles.title}>Create a Listing</Text>
-                </LinearGradient>
-            </View>
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Photos</Text>
-                <View style={styles.buttonRow}>
-                    <Animated.View style={{ transform: [{ scale: galleryButtonScale }], flex: 1 }}>
-                        <TouchableOpacity
-                            onPress={async () => {
-                                animatePress(galleryButtonScale);
-                                let loaded_images = await pickImage();
-                                if (loaded_images) {
-                                    let item_images = loaded_images.assets.map(asset => asset.uri);
-                                    setImages([...images, ...item_images]);
-                                }
-                            }}
-                            activeOpacity={0.9}
-                            style={styles.flexOne}
-                        >
-                            <LinearGradient
-                                colors={[theme.colors.primary, theme.colors.accent]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.gradientButton}
-                            >
-                                <Ionicons name="images" size={20} color="#fff" style={styles.buttonIcon} />
-                                <Text style={styles.buttonText}>Photos</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </Animated.View>
-
-                    <View style={{ width: theme.spacing.md }} />
-
-                    <Animated.View style={{ transform: [{ scale: cameraButtonScale }], flex: 1 }}>
-                        <TouchableOpacity
-                            onPress={async () => {
-                                animatePress(cameraButtonScale);
-                                let camera_image = await takePhoto();
-                                if (camera_image) {
-                                    setImages((prev) => [...prev, camera_image]);
-                                }
-                            }}
-                            activeOpacity={0.9}
-                            style={styles.flexOne}
-                        >
-                            <LinearGradient
-                                colors={[theme.colors.secondary, theme.colors.accent]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.gradientButton}
-                            >
-                                <Ionicons name="camera" size={20} color="#fff" style={styles.buttonIcon} />
-                                <Text style={styles.buttonText}>Camera</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </View>
-
-                {images.length > 0 && (
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.imagePreviewContainer}
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContainer as ViewStyle}
+            >
+                <View style={styles.header as ViewStyle}>
+                    <TouchableOpacity
+                        onPress={() => navigation.openDrawer()}
+                        style={styles.menuButton as ViewStyle}
+                        activeOpacity={0.7}
                     >
-                        {images.map((uri, index) => (
-                            <View key={index} style={styles.imageWrapper}>
-                                <Image source={{ uri }} style={styles.previewImage} />
-                                <TouchableOpacity
-                                    style={styles.removeImageButton}
-                                    onPress={() => setImages(images.filter((_, i) => i !== index))}
+                        <Ionicons name="menu" size={25} color={theme.colors.text} />
+                    </TouchableOpacity>
+                    <LinearGradient
+                        colors={[theme.colors.primary, theme.colors.secondary]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.titleGradient as ViewStyle}
+                    >
+                        <Text style={styles.title as TextStyle}>Create a Listing</Text>
+                    </LinearGradient>
+                </View>
+
+                <View style={styles.section as ViewStyle}>
+                    <Text style={styles.sectionTitle as TextStyle}>Photos</Text>
+                    <View style={styles.buttonRow as ViewStyle}>
+                        <Animated.View style={{ transform: [{ scale: galleryButtonScale }], flex: 1 }}>
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    animatePress(galleryButtonScale);
+                                    let loaded_images = await pickImage();
+                                    if (loaded_images) {
+                                        let item_images = loaded_images.assets.map(asset => asset.uri);
+                                        setImages([...images, ...item_images]);
+                                    }
+                                }}
+                                activeOpacity={0.9}
+                                style={styles.flexOne as ViewStyle}
+                            >
+                                <LinearGradient
+                                    colors={[theme.colors.primary, theme.colors.accent]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.gradientButton as ViewStyle}
                                 >
-                                    <Ionicons name="close-circle" size={22} color={theme.colors.error} />
-                                </TouchableOpacity>
-                            </View>
-                        ))}
-                    </ScrollView>
-                )}
-            </View>
+                                    <Ionicons name="images" size={20} color="#fff" style={styles.buttonIcon as TextStyle} />
+                                    <Text style={styles.buttonText as TextStyle}>Photos</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </Animated.View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Title</Text>
+                        <View style={{ width: theme.spacing.md }} />
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Name</Text>
-                    <TextInput
-                        placeholder="e.g., Vintage Leather Jacket"
-                        placeholderTextColor={theme.colors.textLight}
-                        value={title}
-                        onChangeText={setTitle}
-                        style={styles.input}
-                    />
+                        <Animated.View style={{ transform: [{ scale: cameraButtonScale }], flex: 1 }}>
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    animatePress(cameraButtonScale);
+                                    let camera_image = await takePhoto();
+                                    if (camera_image) {
+                                        setImages((prev) => [...prev, camera_image]);
+                                    }
+                                }}
+                                activeOpacity={0.9}
+                                style={styles.flexOne as ViewStyle}
+                            >
+                                <LinearGradient
+                                    colors={[theme.colors.secondary, theme.colors.accent]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.gradientButton as ViewStyle}
+                                >
+                                    <Ionicons name="camera" size={20} color="#fff" style={styles.buttonIcon as TextStyle} />
+                                    <Text style={styles.buttonText as TextStyle}>Camera</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </View>
+
+                    {images.length > 0 && (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={styles.imagePreviewContainer as ViewStyle}
+                        >
+                            {images.map((uri, index) => (
+                                <View key={index} style={styles.imageWrapper as ViewStyle}>
+                                    <Image source={{ uri }} style={styles.previewImage as ImageStyle} />
+                                    <TouchableOpacity
+                                        style={styles.removeImageButton as ViewStyle}
+                                        onPress={() => setImages(images.filter((_, i) => i !== index))}
+                                    >
+                                        <Ionicons name="close-circle" size={22} color={theme.colors.error} />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    )}
                 </View>
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Description</Text>
-                    <TextInput
-                        placeholder="Describe your item..."
-                        placeholderTextColor={theme.colors.textLight}
-                        value={description}
-                        onChangeText={setDescription}
-                        style={[styles.input, styles.textArea]}
-                        multiline
-                        numberOfLines={4}
-                    />
-                </View>
+                <View style={styles.section as ViewStyle}>
+                    <Text style={styles.sectionTitle as TextStyle}>Title</Text>
 
-                <View style={styles.row}>
-                    <View style={[styles.inputGroup, styles.flexOne, styles.marginRight]}>
-                        <Text style={styles.label}>Price (£)</Text>
+                    <View style={styles.inputGroup as ViewStyle}>
+                        <Text style={styles.label as TextStyle}>Name</Text>
                         <TextInput
-                            placeholder="0.00"
+                            placeholder="e.g., Vintage Leather Jacket"
                             placeholderTextColor={theme.colors.textLight}
-                            value={price !== null ? price.toString() : ''}
-                            onChangeText={(text) => setPrice(Number(text))}
-                            style={styles.input}
-                            keyboardType="numeric"
+                            value={title}
+                            onChangeText={setTitle}
+                            style={styles.input as TextStyle}
                         />
                     </View>
 
-                    <View style={[styles.inputGroup, styles.flexOne]}>
-                        <Text style={styles.label}>Condition</Text>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={condition}
-                                onValueChange={setCondition}
-                                style={styles.picker}
-                                dropdownIconColor={theme.colors.primary}
-                            >
-                                <Picker.Item label="Select condition" value="" color={theme.colors.textLight} />
-                                <Picker.Item label="New" value="new" color={theme.colors.text} />
-                                <Picker.Item label="Used - Like New" value="like_new" color={theme.colors.text} />
-                                <Picker.Item label="Used - Good" value="good" color={theme.colors.text} />
-                                <Picker.Item label="Used - Fair" value="fair" color={theme.colors.text} />
-                            </Picker>
-                            <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon} />
+                    <View style={styles.inputGroup as ViewStyle}>
+                        <Text style={styles.label as TextStyle}>Description</Text>
+                        <TextInput
+                            placeholder="Describe your item..."
+                            placeholderTextColor={theme.colors.textLight}
+                            value={description}
+                            onChangeText={setDescription}
+                            style={[styles.input as TextStyle, styles.textArea as TextStyle]}
+                            multiline
+                            numberOfLines={4}
+                        />
+                    </View>
+
+                    <View style={styles.row as ViewStyle}>
+                        <View style={[styles.inputGroup as ViewStyle, styles.flexOne as ViewStyle, styles.marginRight as ViewStyle]}>
+                            <Text style={styles.label as TextStyle}>Price (£)</Text>
+                            <TextInput
+                                placeholder="0.00"
+                                placeholderTextColor={theme.colors.textLight}
+                                value={price !== null ? price.toString() : ''}
+                                onChangeText={(text) => setPrice(Number(text))}
+                                style={styles.input as TextStyle}
+                                keyboardType="numeric"
+                            />
+                        </View>
+
+                        <View style={[styles.inputGroup as ViewStyle, styles.flexOne as ViewStyle]}>
+                            <Text style={styles.label as TextStyle}>Condition</Text>
+                            <View style={styles.pickerContainer as ViewStyle}>
+                                <Picker
+                                    selectedValue={condition}
+                                    onValueChange={setCondition}
+                                    style={styles.picker as TextStyle}
+                                    dropdownIconColor={theme.colors.primary}
+                                >
+                                    <Picker.Item label="Select condition" value="" color={theme.colors.textLight} />
+                                    <Picker.Item label="New" value="new" color={theme.colors.text} />
+                                    <Picker.Item label="Used - Like New" value="like_new" color={theme.colors.text} />
+                                    <Picker.Item label="Used - Good" value="good" color={theme.colors.text} />
+                                    <Picker.Item label="Used - Fair" value="fair" color={theme.colors.text} />
+                                </Picker>
+                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as ImageStyle} />
+                            </View>
+                            {/*<View style={{ zIndex: open ? 1000 : 1 }}>*/}
+                            {/*    <DropDownPicker*/}
+                            {/*        open={open}*/}
+                            {/*        value={value}*/}
+                            {/*        items={items}*/}
+                            {/*        setOpen={setOpen}*/}
+                            {/*        setValue={setValue}*/}
+                            {/*        setItems={setItems}*/}
+                            {/*        // modal={true}*/}
+                            {/*        modalProps={{*/}
+                            {/*            animationType: 'slide',   // optional*/}
+                            {/*        }}*/}
+
+                            {/*    />*/}
+                            {/*</View>*/}
                         </View>
                     </View>
                 </View>
-            </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Category</Text>
+                <View style={styles.section as ViewStyle}>
+                    <Text style={styles.sectionTitle  as TextStyle}>Category</Text>
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Category</Text>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            selectedValue={selectedTop?.id ?? ''}
-                            onValueChange={(catID) => {
-                                const category = taxonomy.find((cat) => cat.id === catID);
-                                setSelectedTop(category);
-                                setSelectedSecond(null);
-                                setSelectedThird(null);
-                            }}
-                            style={styles.picker}
-                            dropdownIconColor={theme.colors.primary}
-                        >
-                            <Picker.Item label="Select a category" value="" color={theme.colors.textLight} />
-                            {taxonomy.map((cat) => (
-                                <Picker.Item key={cat.id} label={cat.name} value={cat.id} color={theme.colors.text} />
-                            ))}
-                        </Picker>
-                        <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon} />
-                    </View>
-                </View>
-
-                {selectedTop && (
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sub-category</Text>
-                        <View style={styles.pickerContainer}>
+                    <View style={styles.inputGroup as ViewStyle}>
+                        <Text style={styles.label as TextStyle}>Category</Text>
+                        <View style={styles.pickerContainer as ViewStyle}>
                             <Picker
-                                selectedValue={selectedSecond?.id ?? ''}
-                                onValueChange={(subCatID) => {
-                                    const subCategory = selectedTop.children?.find((sub) => sub.id === subCatID);
-                                    setSelectedSecond(subCategory);
+                                selectedValue={selectedTop?.id ?? ''}
+                                onValueChange={(catID) => {
+                                    const category = taxonomy.find((cat) => cat.id === catID);
+                                    setSelectedTop(category);
+                                    setSelectedSecond(null);
                                     setSelectedThird(null);
                                 }}
-                                style={styles.picker}
+                                style={styles.picker as TextStyle}
                                 dropdownIconColor={theme.colors.primary}
                             >
-                                <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
-                                {selectedTop.children?.map((sub) => (
-                                    <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
+                                <Picker.Item label="Select a category" value="" color={theme.colors.textLight} />
+                                {taxonomy.map((cat) => (
+                                    <Picker.Item key={cat.id} label={cat.name} value={cat.id} color={theme.colors.text} />
                                 ))}
                             </Picker>
-                            <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon} />
+                            <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
                         </View>
                     </View>
-                )}
 
-                {selectedSecond && selectedSecond.children?.length > 0 && (
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sub-category</Text>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={selectedThird?.id ?? ''}
-                                onValueChange={(subCatID) => {
-                                    const subCategory = selectedSecond.children?.find((sub) => sub.id === subCatID);
-                                    setSelectedThird(subCategory);
-                                }}
-                                style={styles.picker}
-                                dropdownIconColor={theme.colors.primary}
-                            >
-                                <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
-                                {selectedSecond.children?.map((sub) => (
-                                    <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
-                                ))}
-                            </Picker>
-                            <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon} />
+                    {selectedTop && (
+                        <View style={styles.inputGroup as ViewStyle}>
+                            <Text style={styles.label as TextStyle}>Sub-category</Text>
+                            <View style={styles.pickerContainer as ViewStyle}>
+                                <Picker
+                                    selectedValue={selectedSecond?.id ?? ''}
+                                    onValueChange={(subCatID) => {
+                                        const subCategory = selectedTop.children?.find((sub) => sub.id === subCatID);
+                                        setSelectedSecond(subCategory);
+                                        setSelectedThird(null);
+                                    }}
+                                    style={styles.picker as TextStyle}
+                                    dropdownIconColor={theme.colors.primary}
+                                >
+                                    <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
+                                    {selectedTop.children?.map((sub) => (
+                                        <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
+                                    ))}
+                                </Picker>
+                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
+                            </View>
                         </View>
-                    </View>
-                )}
-            </View>
+                    )}
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Location</Text>
-                <View style={styles.locationRow}>
-                    <View style={[styles.inputGroup, styles.flexOne, styles.marginRight]}>
-                        <TextInput
-                            placeholder="Enter address"
-                            placeholderTextColor={theme.colors.textLight}
-                            value={address}
-                            onChangeText={setAddress}
-                            style={styles.input}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={getLocation}
-                        style={styles.locationButton}
-                        activeOpacity={0.8}
-                    >
-                        <Ionicons name="locate" size={22} color={theme.colors.primary} />
-                        <Text style={styles.locationButtonText}>Use my location</Text>
-                    </TouchableOpacity>
+                    {selectedSecond && selectedSecond.children?.length > 0 && (
+                        <View style={styles.inputGroup as ViewStyle}>
+                            <Text style={styles.label as TextStyle}>Sub-category</Text>
+                            <View style={styles.pickerContainer as ViewStyle}>
+                                <Picker
+                                    selectedValue={selectedThird?.id ?? ''}
+                                    onValueChange={(subCatID) => {
+                                        const subCategory = selectedSecond.children?.find((sub) => sub.id === subCatID);
+                                        setSelectedThird(subCategory);
+                                    }}
+                                    style={styles.picker as TextStyle}
+                                    dropdownIconColor={theme.colors.primary}
+                                >
+                                    <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
+                                    {selectedSecond.children?.map((sub) => (
+                                        <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
+                                    ))}
+                                </Picker>
+                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
+                            </View>
+                        </View>
+                    )}
                 </View>
-            </View>
 
-            <TouchableOpacity
-                onPress={async () => {
-                    await handleSubmit();
-                }}
-                style={styles.submitButtonWrapper}
-                disabled={
-                    !images.length ||
-                    !selectedTop ||
-                    !selectedSecond ||
-                    !description ||
-                    !title ||
-                    !condition ||
-                    !price ||
-                    !address
-                }
-                activeOpacity={0.8}
-            >
-                <LinearGradient
-                    colors={['#000000', "#000000"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.submitButton}
+                <View style={styles.section as ViewStyle}>
+                    <Text style={styles.sectionTitle as TextStyle}>Location</Text>
+                    <View style={styles.locationRow as ViewStyle}>
+                        <View style={[styles.flexOne as ViewStyle, styles.marginRight as ViewStyle]}>
+                            <TextInput
+                                placeholder="Enter address"
+                                placeholderTextColor={theme.colors.textLight}
+                                value={address}
+                                onChangeText={setAddress}
+                                style={styles.input as TextStyle}
+                            />
+                        </View>
+                        <TouchableOpacity
+                            onPress={getLocation}
+                            style={styles.locationButton as ViewStyle}
+                            activeOpacity={0.8}
+                        >
+                            <Ionicons name="locate" size={22} color={theme.colors.primary} />
+                            <Text style={styles.locationButtonText as TextStyle}>Use my location</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <TouchableOpacity
+                    onPress={async () => {
+                        await handleSubmit();
+                    }}
+                    style={styles.submitButtonWrapper as ViewStyle}
+                    disabled={
+                        !images.length ||
+                        !selectedTop ||
+                        !selectedSecond ||
+                        !description ||
+                        !title ||
+                        !condition ||
+                        !price ||
+                        !address
+                    }
+                    activeOpacity={0.8}
                 >
-                    <Text style={styles.submitText}>Create Listing</Text>
-                    <Ionicons name="arrow-forward" size={20} color="#fff" style={{ marginLeft: 8 }} />
-                </LinearGradient>
-            </TouchableOpacity>
-        </ScrollView>
+                    <LinearGradient
+                        colors={['#000000', "#000000"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.submitButton  as ViewStyle}
+                    >
+                        <Text style={styles.submitText as TextStyle}>Create Listing</Text>
+                        <Ionicons name="arrow-forward" size={20} color="#fff" style={{ marginLeft: 8 }} />
+                    </LinearGradient>
+                </TouchableOpacity>
+            </ScrollView>
+        </SafeAreaView>
+
     );
 }

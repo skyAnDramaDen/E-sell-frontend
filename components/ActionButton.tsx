@@ -1,30 +1,24 @@
 import React from "react";
-import {Text, View, TouchableOpacity, StyleSheet} from "react-native";
+import {Text, View, TouchableOpacity, StyleSheet, TextStyle} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {Ionicons} from "@expo/vector-icons";
 import {theme} from "../src/theme/theme";
 import { styles } from "../src/styles/styles";
+import {ImageStyle} from "expo-image";
 
 function ActionButton ({ name, onPress,}: { name: string, onPress: () => void, }) {
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.7} >
             <LinearGradient
-                colors={["transparent", "transparent"]}
+                colors={["#fff", "#fff"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={{
-                    flexDirection: "row",
-                    borderRadius: 5,
-                    padding: 5,
-                    alignItems: "center",
-                    borderWidth: 1,
-                }}
+                style={[styles.gradient as ImageStyle, { marginRight: theme.spacing.sm }]}
             >
-                <Text className="text-lg">{name}</Text>
-
+                <Text style={styles.text as TextStyle}>{name}</Text>
             </LinearGradient>
         </TouchableOpacity>
-    )
+    );
 }
 
 export default ActionButton;

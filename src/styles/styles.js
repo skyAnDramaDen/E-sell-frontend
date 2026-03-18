@@ -2,15 +2,165 @@ import { theme } from "../theme/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+    changePasswordHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
     scrollContainer: {
         padding: theme.spacing.sm,
         paddingBottom: theme.spacing.xl,
         width: '100%'
     },
+    registerLink: {
+        alignSelf: 'center',
+    },
+    registerText: {
+        ...theme.typography.body,
+        color: theme.colors.text,
+    },
+    registerHighlight: {
+        color: theme.colors.primary,
+        textDecorationLine: 'underline',
+    },
+    form: {
+        flex: 1,
+        paddingHorizontal: theme.spacing.lg,
+        marginTop: theme.spacing.xl * 2, // approx 64 (mt-20 in Tailwind)
+    },
+    button: {
+        backgroundColor: theme.colors.primary,
+        paddingVertical: theme.spacing.md,
+        borderRadius: theme.borderRadius.lg,
+        alignItems: 'center',
+        marginBottom: theme.spacing.md,
+        ...theme.shadows.sm,
+    },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
     centered: {
         // borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    conversationItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.md,
+        backgroundColor: theme.colors.surface,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.colors.border,
+    },
+    avatarContainer: {
+        position: 'relative',
+        marginRight: theme.spacing.md,
+    },
+    unreadBadge: {
+        position: 'absolute',
+        top: -2,
+        right: -2,
+        minWidth: 20,
+        height: 20,
+        borderRadius: 10,
+        backgroundColor: theme.colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+        borderWidth: 2,
+        borderColor: theme.colors.surface,
+    },
+
+    bottomRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    lastMessage: {
+        flex: 1,
+        fontSize: theme.typography.body.fontSize,
+        color: theme.colors.textLight,
+        marginRight: theme.spacing.sm,
+    },
+    unreadLastMessage: {
+        fontWeight: '600',
+        color: theme.colors.text,
+    },
+    unreadDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: theme.colors.primary,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 60,
+        paddingHorizontal: theme.spacing.lg,
+    },
+    emptyText: {
+        fontSize: theme.typography.h3.fontSize,
+        color: theme.colors.textLight,
+        marginTop: theme.spacing.md,
+        marginBottom: theme.spacing.lg,
+    },
+    startChatButton: {
+        backgroundColor: theme.colors.primary,
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.xl,
+        borderRadius: theme.borderRadius.lg,
+        ...theme.shadows.md,
+    },
+    startChatButtonText: {
+        fontSize: theme.typography.body.fontSize,
+        fontWeight: '600',
+        color: '#fff',
+    },
+    errorText: {
+        color: theme.colors.error,
+        marginBottom: theme.spacing.md,
+    },
+    conversationInfo: {
+        flex: 1,
+    },
+    topRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+    listContent: {
+        paddingVertical: theme.spacing.sm,
+    },
+    headerTitle: {
+        fontSize: theme.typography.h2.fontSize,
+        fontWeight: '700',
+        color: theme.colors.text,
+    },
+    headerButton: {
+        padding: theme.spacing.sm,
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.colors.background,
+    },
+    name: {
+        fontSize: theme.typography.h3.fontSize,
+        fontWeight: '600',
+        color: theme.colors.text,
+        flex: 1,
+        marginRight: theme.spacing.sm,
+    },
+    timestamp: {
+        fontSize: theme.typography.caption.fontSize,
+        color: theme.colors.textLight,
+    },
+    unreadText: {
+        fontSize: 10,
+        fontWeight: '700',
+        color: '#fff',
     },
     container: {
         flex: 1,
@@ -148,6 +298,29 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: theme.spacing.sm,
+    },
+    gradient: {
+        flexDirection: "row",
+        borderRadius: theme.borderRadius.lg,
+        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: theme.colors.primary,
+        backgroundColor: "#fff",
+    },
+    text: {
+        fontSize: theme.typography.body.fontSize,
+        color: theme.colors.primary,
+        fontWeight: "600",
+    },
+    plus: {
+        fontSize: theme.typography.body.fontSize,
+        marginRight: theme.spacing.xs,
+        fontWeight: "700",
+    },
+    buttonStyles: {
+
     },
     gradientButton: {
         flexDirection: 'row',
@@ -298,12 +471,6 @@ export const styles = StyleSheet.create({
         marginBottom: theme.spacing.sm,
         justifyContent: 'space-between',
     },
-
-    // header: {
-    //     flexDirection: 'row',
-    //     justifyContent: 'flex-start',
-    //     marginBottom: theme.spacing.md,
-    // },
     menuButton: {
         padding: theme.spacing.sm,
         marginRight: theme.spacing.md,

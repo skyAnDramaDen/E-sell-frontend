@@ -7,7 +7,7 @@ import {
     Switch,
     SafeAreaView,
     StyleSheet,
-    TextInput,
+    TextInput, ViewStyle, TextStyle,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -101,15 +101,17 @@ export default function ChangePassword() {
     }
 
     return (
+
+        <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
         <ScrollView
-            contentContainerStyle={globalStyles.scrollContainer}
+            contentContainerStyle={globalStyles.scrollContainer as ViewStyle}
             showsVerticalScrollIndicator={false}
         >
-            <View style={globalStyles.centered}>
-                <View style={globalStyles.header}>
+            <View style={globalStyles.centered as ViewStyle}>
+                <View style={globalStyles.header as ViewStyle}>
                     <TouchableOpacity
                         onPress={() => navigation.openDrawer()}
-                        style={globalStyles.menuButton}
+                        style={globalStyles.menuButton as ViewStyle}
                     >
                         <Ionicons name="menu" size={28} color={theme.colors.text} />
                     </TouchableOpacity>
@@ -118,24 +120,24 @@ export default function ChangePassword() {
                         colors={[theme.colors.primary, theme.colors.secondary]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={globalStyles.titleGradient}
+                        style={globalStyles.titleGradient as ViewStyle}
                     >
-                        <Text style={globalStyles.title}>Change Password</Text>
+                        <Text style={globalStyles.title as TextStyle}>Change Password</Text>
                     </LinearGradient>
 
                     <MultiActionButton
-                        name="Back"
+                        name=""
                         icon="arrow-back"
                         onPress={() => router.push('/settings')}
                     />
                 </View>
 
-                <View style={globalStyles.section}>
-                    <View style={globalStyles.inputGroup}>
-                        <Text style={globalStyles.label}>Current Password</Text>
-                        <View style={globalStyles.inputWrapper}>
+                <View style={globalStyles.section as ViewStyle}>
+                    <View style={globalStyles.inputGroup as ViewStyle}>
+                        <Text style={globalStyles.label as TextStyle}>Current Password</Text>
+                        <View style={globalStyles.inputWrapper as ViewStyle}>
                             <TextInput
-                                style={globalStyles.input}
+                                style={globalStyles.input as TextStyle}
                                 value={password}
                                 onChangeText={(text) => {
                                     setPassword(text)
@@ -147,11 +149,11 @@ export default function ChangePassword() {
                         </View>
                     </View>
 
-                    <View style={globalStyles.inputGroup}>
-                        <Text style={globalStyles.label}>New Password</Text>
-                        <View style={globalStyles.inputWrapper}>
+                    <View style={globalStyles.inputGroup as ViewStyle}>
+                        <Text style={globalStyles.label as TextStyle}>New Password</Text>
+                        <View style={globalStyles.inputWrapper as ViewStyle}>
                             <TextInput
-                                style={globalStyles.input}
+                                style={globalStyles.input as TextStyle}
                                 value={confirmedPassword}
                                 onChangeText={(text) => {
                                     setConfirmedPassword(text)
@@ -178,21 +180,23 @@ export default function ChangePassword() {
                     <TouchableOpacity
                         onPress={handleSubmit}
                         activeOpacity={0.8}
-                        style={globalStyles.saveButtonWrapper}
+                        style={globalStyles.saveButtonWrapper as ViewStyle}
                     >
                         <LinearGradient
                             colors={[theme.colors.primary, theme.colors.secondary]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            style={globalStyles.saveButton}
+                            style={globalStyles.saveButton as ViewStyle}
                         >
-                            <Text style={globalStyles.saveButtonText}>Update Password</Text>
+                            <Text style={globalStyles.saveButtonText as TextStyle}>Update Password</Text>
                             <Ionicons name="arrow-forward" size={20} color="#fff" style={{ marginLeft: 8 }} />
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
+
+        </SafeAreaView>
     );
 }
 

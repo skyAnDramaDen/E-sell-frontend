@@ -1,5 +1,16 @@
 import React, {useState, useEffect} from "react";
-import {View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, TextInput, SafeAreaView} from "react-native";
+import {
+    View,
+    Text,
+    Image,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    TextInput,
+    ViewStyle,
+    TextStyle,
+} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context"
 import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from '@react-native-picker/picker';
@@ -62,92 +73,111 @@ export default function Listing() {
     }
 
     return (
-        <ScrollView
-            contentContainerStyle={localStyles.scrollContainer}
-            showsVerticalScrollIndicator={false}
+        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+                      edges={["top", "left", "right"]}
+            // edges={["top"]}
         >
-            <View style={globalStyles.listingTopSection}>
-                <MultiActionButton
-                    name="Back"
-                    icon="arrow-back"
-                    onPress={() => router.back()}
-                />
-            </View>
-
-            {imageURLs && imageURLs.length > 0 ? (
-                <ScrollView
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    style={localStyles.imageCarousel}
-                >
-                    {imageURLs && imageURLs.map((url, index) => (
-                        <Image key={index} source={{ uri: url }} style={localStyles.image} />
-                    ))}
-                </ScrollView>
-            ) : (
-                <View style={localStyles.imagePlaceholder}>
-                    <Ionicons name="image-outline" size={48} color={theme.colors.textLight} />
-                    <Text style={localStyles.placeholderText}>No images</Text>
-                </View>
-            )}
-
-            <View style={localStyles.infoCard}>
-                <View style={localStyles.headerRow}>
-                    <Text style={localStyles.productName}>{product.name}</Text>
-                    <Text style={localStyles.productPrice}>£{product.price}</Text>
-                </View>
-
-                <View style={localStyles.metaContainer}>
-                    <View style={localStyles.metaItem}>
-                        <Ionicons name="pricetag-outline" size={16} color={theme.colors.textLight} />
-                        <Text style={localStyles.metaText}>
-                            {product.topCategory} / {product.subCategory} / {product.lowestCategory}
-                        </Text>
-                    </View>
-                    <View style={localStyles.metaItem}>
-                        <Ionicons name="checkmark-circle-outline" size={16} color={theme.colors.textLight} />
-                        <Text style={localStyles.metaText}>
-                            Condition: {product.condition === 'good' ? 'Good' : product.condition === "like_new" ? "Used like new" : product.condition === "new" ? "New" : "Good"}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={globalStyles.section}>
-                <Text style={globalStyles.sectionTitle}>Description</Text>
-                <Text style={localStyles.description}>{product.description}</Text>
-            </View>
-
-            <View style={globalStyles.section}>
-                <Text style={globalStyles.sectionTitle}>Seller</Text>
-                <View style={localStyles.sellerRow}>
-                    <Ionicons name="person-circle-outline" size={48} color={theme.colors.primary} />
-                    <View style={localStyles.sellerInfo}>
-                        <Text style={localStyles.sellerName}>{product.sellerName}</Text>
-                        <Text style={localStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
-                    </View>
-                </View>
-            </View>
-
-            <TouchableOpacity
-                // onPress={() => router.push(`/chat/${product.userId}`)} // adjust if needed
-                activeOpacity={0.8}
-                style={localStyles.contactButtonWrapper}
+            <ScrollView
+                contentContainerStyle={localStyles.scrollContainer}
+                showsVerticalScrollIndicator={false}
             >
-                <LinearGradient
-                    colors={[theme.colors.primary, theme.colors.secondary]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={localStyles.contactButton}
-                >
-                    <Ionicons name="chatbubble-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
-                    <Text style={localStyles.contactButtonText}>Contact Seller</Text>
-                </LinearGradient>
-            </TouchableOpacity>
+                <View style={globalStyles.listingTopSection as ViewStyle}>
+                    <MultiActionButton
+                        name="Back"
+                        icon="arrow-back"
+                        onPress={() => router.back()}
+                    />
+                </View>
 
-            <View style={{ height: theme.spacing.xl }} />
-        </ScrollView>
+                {imageURLs && imageURLs.length > 0 ? (
+                    <ScrollView
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        style={localStyles.imageCarousel}
+                    >
+                        {imageURLs && imageURLs.map((url, index) => (
+                            <Image key={index} source={{ uri: url }} style={localStyles.image} />
+                        ))}
+                    </ScrollView>
+                ) : (
+                    <View style={localStyles.imagePlaceholder}>
+                        <Ionicons name="image-outline" size={48} color={theme.colors.textLight} />
+                        <Text style={localStyles.placeholderText}>No images</Text>
+                    </View>
+                )}
+
+                <View style={localStyles.infoCard}>
+                    <View style={localStyles.headerRow}>
+                        <Text style={localStyles.productName}>{product.name}</Text>
+                        <Text style={localStyles.productPrice}>£{product.price}</Text>
+                    </View>
+
+                    <View style={localStyles.metaContainer}>
+                        <View style={localStyles.metaItem}>
+                            <Ionicons name="pricetag-outline" size={16} color={theme.colors.textLight} />
+                            <Text style={localStyles.metaText}>
+                                {product.topCategory} / {product.subCategory} / {product.lowestCategory}
+                            </Text>
+                        </View>
+                        <View style={localStyles.metaItem}>
+                            <Ionicons name="checkmark-circle-outline" size={16} color={theme.colors.textLight} />
+                            <Text style={localStyles.metaText}>
+                                Condition: {product.condition === 'good' ? 'Good' : product.condition === "like_new" ? "Used like new" : product.condition === "new" ? "New" : "Good"}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={globalStyles.section as ViewStyle}>
+                    <Text style={globalStyles.sectionTitle as TextStyle}>Description</Text>
+                    <Text style={localStyles.description}>{product.description}</Text>
+                </View>
+
+                <View style={globalStyles.section as ViewStyle}>
+                    <Text style={globalStyles.sectionTitle as TextStyle}>Seller</Text>
+                    <View style={localStyles.sellerRow}>
+                        <Ionicons name="person-circle-outline" size={48} color={theme.colors.primary} />
+                        <View style={localStyles.sellerInfo}>
+                            <Text style={localStyles.sellerName}>{product.sellerName}</Text>
+                            <Text style={localStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
+                        </View>
+                    </View>
+                </View>
+
+                <TouchableOpacity
+                    onPress={() => {
+                        if (product) {
+                            router.push({
+                                pathname: "/chat/0" as any,
+                                params: {
+                                    buyerId: user?.id,
+                                    buyerName: user?.username,
+                                    sellerId: product.sellerId,
+                                    sellerName: product.sellerName,
+                                },
+                            });
+                        }
+                    }}
+                    activeOpacity={0.8}
+                    style={localStyles.contactButtonWrapper}
+                >
+                    <LinearGradient
+                        colors={[theme.colors.primary, theme.colors.secondary]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={localStyles.contactButton}
+                    >
+                        <Ionicons name="chatbubble-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
+                        <Text style={localStyles.contactButtonText} onPress={() => {
+
+                        }} >Message Seller</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+
+                <View style={{ height: theme.spacing.xl }} />
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 const localStyles = StyleSheet.create({

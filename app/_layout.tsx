@@ -12,7 +12,13 @@ import "./globals.css";
 function RootLayoutContent() {
     const insets = useSafeAreaInsets();
     return (
-        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }} edges={["top"]} >
+        // <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+        //     // edges={["top"]}
+        // >
+        //
+        //
+        // </SafeAreaView>
+        <>
             <Stack
                 screenOptions = {{
                     headerShown: false,
@@ -26,15 +32,15 @@ function RootLayoutContent() {
                 <Stack.Screen name="listing/index" options={{ headerShown: false }} />
             </Stack>
             <FlashMessage position="top" />
-        </SafeAreaView>
+        </>
     );
 }
 
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+    const [fontsLoaded] = useFonts({
 
-  });
+    });
 
     if (!fontsLoaded) {
         return (
@@ -46,8 +52,8 @@ export default function RootLayout() {
 
 
     return (
-      <AuthProvider>
-        <RootLayoutContent />
-      </AuthProvider>
-  );
+        <AuthProvider>
+            <RootLayoutContent />
+        </AuthProvider>
+    );
 }

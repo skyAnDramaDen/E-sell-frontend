@@ -3,6 +3,8 @@ import { useRouter } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
 import { useAuth } from "../hooks/useAuth";
 
+import { io } from "socket.io-client";
+
 export default function Index() {
     const { user, loading, loadStorage } = useAuth();
     const router = useRouter();
