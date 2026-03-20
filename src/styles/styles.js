@@ -301,7 +301,7 @@ export const styles = StyleSheet.create({
     },
     gradient: {
         flexDirection: "row",
-        borderRadius: theme.borderRadius.lg,
+        borderRadius: theme.borderRadius.xs,
         paddingVertical: theme.spacing.sm,
         paddingHorizontal: theme.spacing.md,
         alignItems: "center",

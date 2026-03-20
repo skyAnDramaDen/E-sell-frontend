@@ -12,6 +12,7 @@ import {
 import { useNavigation, useLocalSearchParams } from "expo-router";
 import { useFocusEffect } from '@react-navigation/native';
 
+import {showMessage} from "react-native-flash-message";
 
 import {search_listings} from "../../../services/listingsService";
 import {AllListings, CategoryNode} from "../../../types/interfaces";
@@ -38,12 +39,15 @@ export default function Search() {
 
     useFocusEffect(
         useCallback(() => {
+            if (params) {
+                setCategory(params.category as string);
+            }
             return () => {
                 setQuery('');
                 setCategory(null);
                 setListings([]);
             };
-        }, [])
+        }, [params?.category])
     );
 
     useEffect(() => {
@@ -60,9 +64,9 @@ export default function Search() {
 
                     setListings(found_listings);
                 }
-
             } catch (error) {
-
+                setListings([]);
+                showMessage({message: "Error fetching listings", type: "danger"});
             }
         }
 

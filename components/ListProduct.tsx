@@ -34,9 +34,14 @@ export default function ListProduct({ item, width }: { item: Listing, width?: nu
             />
 
             <View style={styles.details}>
-                <Text style={styles.name}>{item.product.name}</Text>
-                {item.product.price && <Text style={styles.price}>£{item.product.price}</Text>}
-                {item.product.topCategory && <Text style={styles.category}>{item.product.subCategory}</Text>}
+                <View style={styles.listing_info_card}>
+                    <Text style={styles.name}>{item.product.name}</Text>
+                    {item.product.price && <Text style={styles.price}>£{item.product.price}</Text>}
+                </View>
+                {item.product.topCategory && <Text style={styles.category}
+                                                   numberOfLines={1}
+                                                   ellipsizeMode="tail"
+                >{item.product.lowestCategory}</Text>}
             </View>
         </TouchableOpacity>
     );
@@ -46,7 +51,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: "column",
         padding: 12,
-        alignItems: "center",
         backgroundColor: "#fff",
         borderRadius: 8,
         marginBottom: 8,
@@ -62,18 +66,42 @@ const styles = StyleSheet.create({
 
     details: {
         flex: 1,
+    },
+
+    listing_info_card: {
+        flexDirection: "row",
+        alignItems: "center",
         justifyContent: "space-between",
     },
 
     name: {
         fontSize: 16,
         fontWeight: "600",
+        flexShrink: 1,
     },
 
+
+    // listing_info_card: {
+    //     display: "flex",
+    //     flexDirection: "row",
+    //     alignItems: "center",
+    //     justifyContent: "space-between"
+    // },
+    //
+    // details: {
+    //     flex: 1,
+    //     // justifyContent: "space-between",
+    // },
+    //
+    // name: {
+    //     fontSize: 16,
+    //     fontWeight: "600",
+    // },
+
     price: {
-        fontSize: 14,
+        fontSize: 16,
         color: "#444",
-        marginTop: 4,
+        // marginTop: 4,
     },
 
     category: {

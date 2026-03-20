@@ -10,7 +10,6 @@ web-build/
 expo-env.d.ts
 src/config/local.ts
 
-# Native
 .kotlin/
 *.orig.*
 *.jks
@@ -19,26 +18,18 @@ src/config/local.ts
 *.key
 *.mobileprovision
 
-# Metro
 .metro-health-check*
 
-# debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
 .DS_Store
 *.pem
 
-# local env files
 .env*.local
 
-# typescript
 *.tsbuildinfo
 
-app-example
-
-# generated native folders
 /ios
 /android
