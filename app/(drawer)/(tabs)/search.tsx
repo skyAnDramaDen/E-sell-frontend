@@ -9,7 +9,7 @@ import {
     ViewStyle,
     TextStyle
 } from "react-native";
-import { useNavigation, useLocalSearchParams } from "expo-router";
+import { useNavigation, useLocalSearchParams, useRouter } from "expo-router";
 import { useFocusEffect } from '@react-navigation/native';
 
 import {showMessage} from "react-native-flash-message";
@@ -25,6 +25,7 @@ import { styles as globalStyles } from "../../../src/styles/styles";
 import { theme } from "../../../src/theme/theme";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ImageStyle} from "expo-image";
+import ActionButton from "../../../components/ActionButton";
 
 export default function Search() {
     const [query, setQuery] = useState("");
@@ -32,7 +33,9 @@ export default function Search() {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const params = useLocalSearchParams();
     const [category, setCategory] = useState(params.category as string || "" || null);
-    const { login, loading, error, user } = useAuth();
+    const { user } = useAuth();
+
+    const router = useRouter();
 
     const CARD_GAP = theme.spacing.sm;
     const CARD_WIDTH = (Dimensions.get("window").width - CARD_GAP * 3) / 2;
@@ -42,10 +45,13 @@ export default function Search() {
             if (params) {
                 setCategory(params.category as string);
             }
+
             return () => {
-                setQuery('');
-                setCategory(null);
-                setListings([]);
+                // console.log("Cleaning up Search Page!");
+                // setQuery('');
+                // setCategory(null);
+                // setListings([]);
+                // router.setParams({ category: null });
             };
         }, [params?.category])
     );
@@ -107,13 +113,27 @@ export default function Search() {
                 </View>
 
                 <View style={globalStyles.resultsContainer as ViewStyle}>
-                    {query.length < 1 && !category ? (
-                        <Text style={globalStyles.placeholderText as TextStyle}>Start typing to search…</Text>
-                    ) : (
-                        <Text style={globalStyles.placeholderText as TextStyle}>
-                            Showing results for "{query.length > 0 ? query : category}"
-                        </Text>
-                    )}
+                    <View style = {{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                        {query.length < 1 && !category ? (
+                            <Text style={globalStyles.placeholderText as TextStyle}>Start typing to search…</Text>
+                        ) : (
+                            <Text style={globalStyles.placeholderText as TextStyle}>
+                                {
+                                    (category != null || query.length > 2) && listings.length > 0
+                                        ? `Showing results for \"${query.length > 0 ? query : category}\"`
+                                        : (category != null || query.length > 2) && listings.length < 1
+                                            ? "There are no results for that search"
+                                            : "Start typing to search"
+                                }
+                            </Text>
+                        )}
+                        <ActionButton name={"Clear"} onPress={() => {
+                            setQuery("");
+                            setListings([]);
+                            setCategory(null);
+                            router.setParams({ category: null });
+                        }}/>
+                    </View>
 
                     {listings.length > 0 && (
                         <FlatList

@@ -1,23 +1,12 @@
 import React from "react";
-import {useState, useEffect} from "react";
-import {Text, View, TouchableOpacity, FlatList, Image, Pressable, Modal, StyleSheet} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import { useAuth } from "../hooks/useAuth";
-
-import {
-    Listing,
-    Product
-} from "../types/interfaces";
-
-import {delete_listing} from "../services/listingsService";
+import {Text, View, Image, Pressable, StyleSheet} from "react-native";
+import { useRouter } from "expo-router";
 
 export default function ProductCategoryCard({ category, imageURL, size }: { category: string, imageURL: string, size?: "small" | "large"; }) {
     const router = useRouter();
     return (
         <Pressable onPress={() => {
             router.push(`/search?query=shoes&category=${category}`);
-            // router.navigate("/sell");
         }}
         style={{ width: 182, height: 182, marginBottom: 10,}}
         >
@@ -29,7 +18,6 @@ export default function ProductCategoryCard({ category, imageURL, size }: { cate
                        size === "large" ? styles.largeCard : styles.smallCard,
                    ]}
             />
-            {/*<Text>${category}</Text>*/}
             <View style={styles.overlay}>
                 <Text style={styles.text}>{category}</Text>
             </View>

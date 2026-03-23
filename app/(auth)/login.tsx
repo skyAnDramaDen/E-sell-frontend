@@ -69,7 +69,7 @@ export default function LoginScreen() {
                     onChangeText={setEmail}
                     autoCapitalize="none"
                     keyboardType="email-address"
-                    placeholder="your@email.com"
+                    placeholder="somethingcool@gmail.com"
                     placeholderTextColor={theme.colors.textLight}
                 />
 

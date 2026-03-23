@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect, useCallback} from "react";
 import {
     View,
     Text,
@@ -9,6 +9,7 @@ import {
     Animated,
     ViewStyle, TextStyle
 } from "react-native";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import { LinearGradient } from "expo-linear-gradient";
 import { Picker } from '@react-native-picker/picker';
@@ -19,12 +20,8 @@ import { styles } from "../../../src/styles/styles";
 import {
     CategoryNode
 } from "../../../types/interfaces";
-
-
 import { useFocusEffect } from "expo-router";
-
 import taxonomy from "../../../assets/taxonomy.json";
-
 
 import * as Location from "expo-location";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
@@ -34,6 +31,7 @@ import { create_listing } from "../../../services/listingsService";
 import { theme } from "../../../src/theme/theme";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ImageStyle} from "expo-image";
+import {showMessage} from "react-native-flash-message";
 
 export default function SellScreen() {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -60,23 +58,79 @@ export default function SellScreen() {
     const galleryButtonScale = useRef(new Animated.Value(1)).current;
     const cameraButtonScale = useRef(new Animated.Value(1)).current;
 
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
+    const [conditionOpen, setConditionOpen] = useState(false);
+    const [conditionValue, setConditionValue] = useState(null);
+    const [conditionItems, setConditionItems] = useState([
         { label: 'New', value: 'new' },
         { label: 'Used - Like New', value: 'like_new' },
+        { label: 'Used - Good', value: 'good' },
+        { label: 'Used - Fair', value: 'fair' },
     ]);
 
-    useFocusEffect( React.useCallback(() => {
-        return () => {
-            setImages([]);
-            setSelectedTop(null);
-            setSelectedSecond(null);
-            setLocation("");
-            setDescription("");
-            setTitle("");
-            setPrice(null);
-        };
+    const [topCategoryOpen, setTopCategoryOpen] = useState(false);
+    const [topCategoryValue, setTopCategoryValue] = useState<number | null>(null);
+    const [topCategoryItems, setTopCategoryItems] = useState<{label: string, value: number}[]>([]);
+
+    useEffect(() => {
+        if (taxonomy) {
+            setTopCategoryItems(
+                taxonomy.map(cat => ({
+                    label: cat.name,
+                    value: cat.id,
+                }))
+            );
+        }
+    }, [taxonomy]);
+
+    const [subCategoryItems, setSubCategoryItems] = useState<{label: string, value: number}[]>([]);
+    const [subCategoryOpen, setSubCategoryOpen] = useState(false);
+    const [subCategoryValue, setSubCategoryValue] = useState<number | null>(null);
+    useEffect(() => {
+        if (taxonomy) {
+            taxonomy.find((cat) => {
+                if (cat.id == topCategoryValue) {
+                    const mappedChildren = cat.children.map(child => ({
+                        label: child.name,
+                        value: child.id,
+                    }));
+                    setSubCategoryItems(mappedChildren);
+                }
+            })
+        }
+    }, [topCategoryValue])
+
+    const [lowestCategoryItems, setLowestCategoryItems] = useState<{label: string, value: number}[]>([]);
+    const [lowestCategoryOpen, setLowestCategoryOpen] = useState(false);
+    const [lowestCategoryValue, setLowestCategoryValue] = useState<number | null>(null);
+    useEffect(() => {
+        if (taxonomy) {
+            taxonomy.find((cat) => {
+                if (cat.id === topCategoryValue) {
+                    cat.children.find((sub_cat) => {
+                        if (sub_cat.id === subCategoryValue) {
+                            const mappedChildren = sub_cat.children.map(child => ({
+                                label: child.name,
+                                value: child.id,
+                            }));
+                            setLowestCategoryItems(mappedChildren);
+                        }
+                    })
+                }
+            })
+        }
+    }, [subCategoryValue])
+
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                setImages([]);
+                setSelectedTop(null);
+                setSelectedSecond(null);
+                setLocation("");
+                setDescription("");
+                setTitle("");
+                setPrice(null);
+            };
         }, [])
     );
 
@@ -105,6 +159,21 @@ export default function SellScreen() {
             setUseLocationLoading(false);
         }
     };
+
+    const isDisabled = () => {
+        if (!user ||
+            !images.length ||
+            !selectedTop ||
+            !selectedSecond ||
+            !description ||
+            !title ||
+            !condition ||
+            !price ||
+            !address) {
+            return true
+        }
+        return false
+    }
 
     const handleSubmit = async () => {
         if (title && description && condition && price && selectedTop && selectedSecond && user) {
@@ -140,10 +209,12 @@ export default function SellScreen() {
             try {
                 const res = await create_listing(formData);
 
-                router.replace(`/listing/${res.product.id}`)
+                router.replace(`/listing/${res.product.id}`);
             } catch (error) {
                 alert("Error");
             }
+        } else {
+            showMessage({ message: "something is missing", type: "danger" });
         }
     }
 
@@ -298,36 +369,24 @@ export default function SellScreen() {
 
                         <View style={[styles.inputGroup as ViewStyle, styles.flexOne as ViewStyle]}>
                             <Text style={styles.label as TextStyle}>Condition</Text>
-                            <View style={styles.pickerContainer as ViewStyle}>
-                                <Picker
-                                    selectedValue={condition}
-                                    onValueChange={setCondition}
-                                    style={styles.picker as TextStyle}
-                                    dropdownIconColor={theme.colors.primary}
-                                >
-                                    <Picker.Item label="Select condition" value="" color={theme.colors.textLight} />
-                                    <Picker.Item label="New" value="new" color={theme.colors.text} />
-                                    <Picker.Item label="Used - Like New" value="like_new" color={theme.colors.text} />
-                                    <Picker.Item label="Used - Good" value="good" color={theme.colors.text} />
-                                    <Picker.Item label="Used - Fair" value="fair" color={theme.colors.text} />
-                                </Picker>
-                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as ImageStyle} />
-                            </View>
-                            {/*<View style={{ zIndex: open ? 1000 : 1 }}>*/}
-                            {/*    <DropDownPicker*/}
-                            {/*        open={open}*/}
-                            {/*        value={value}*/}
-                            {/*        items={items}*/}
-                            {/*        setOpen={setOpen}*/}
-                            {/*        setValue={setValue}*/}
-                            {/*        setItems={setItems}*/}
-                            {/*        // modal={true}*/}
-                            {/*        modalProps={{*/}
-                            {/*            animationType: 'slide',   // optional*/}
-                            {/*        }}*/}
 
-                            {/*    />*/}
-                            {/*</View>*/}
+                            <View style={{ zIndex: conditionOpen ? 9999 : 1}}>
+                                <DropDownPicker
+                                    open={conditionOpen}
+                                    value={conditionValue}
+                                    items={conditionItems}
+                                    setOpen={setConditionOpen}
+                                    setValue={setConditionValue}
+                                    setItems={setConditionItems}
+                                    modalProps={{
+                                        animationType: 'slide',
+                                    }}
+                                    listMode="MODAL"
+                                    onChangeValue={(condition_value) => {
+                                        setCondition(condition_value);
+                                    }}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -338,23 +397,28 @@ export default function SellScreen() {
                     <View style={styles.inputGroup as ViewStyle}>
                         <Text style={styles.label as TextStyle}>Category</Text>
                         <View style={styles.pickerContainer as ViewStyle}>
-                            <Picker
-                                selectedValue={selectedTop?.id ?? ''}
-                                onValueChange={(catID) => {
-                                    const category = taxonomy.find((cat) => cat.id === catID);
-                                    setSelectedTop(category);
-                                    setSelectedSecond(null);
-                                    setSelectedThird(null);
-                                }}
-                                style={styles.picker as TextStyle}
-                                dropdownIconColor={theme.colors.primary}
-                            >
-                                <Picker.Item label="Select a category" value="" color={theme.colors.textLight} />
-                                {taxonomy.map((cat) => (
-                                    <Picker.Item key={cat.id} label={cat.name} value={cat.id} color={theme.colors.text} />
-                                ))}
-                            </Picker>
-                            <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
+                            <View style={{ zIndex: topCategoryOpen ? 9999 : 1}}>
+                                <DropDownPicker
+                                    open={topCategoryOpen}
+                                    value={topCategoryValue}
+                                    items={topCategoryItems}
+                                    setOpen={setTopCategoryOpen}
+                                    setValue={setTopCategoryValue}
+                                    setItems={setTopCategoryItems}
+                                    modalProps={{
+                                        animationType: 'slide',
+                                    }}
+                                    onChangeValue={(catID) => {
+                                        const category = taxonomy.find((cat) => cat.id === catID);
+                                        setSelectedTop(category);
+                                        setSelectedSecond(null);
+                                        setSelectedThird(null);
+                                        setSubCategoryValue(null);
+                                        setLowestCategoryValue(null);
+                                    }}
+                                    listMode="MODAL"
+                                />
+                            </View>
                         </View>
                     </View>
 
@@ -362,22 +426,29 @@ export default function SellScreen() {
                         <View style={styles.inputGroup as ViewStyle}>
                             <Text style={styles.label as TextStyle}>Sub-category</Text>
                             <View style={styles.pickerContainer as ViewStyle}>
-                                <Picker
-                                    selectedValue={selectedSecond?.id ?? ''}
-                                    onValueChange={(subCatID) => {
-                                        const subCategory = selectedTop.children?.find((sub) => sub.id === subCatID);
-                                        setSelectedSecond(subCategory);
-                                        setSelectedThird(null);
-                                    }}
-                                    style={styles.picker as TextStyle}
-                                    dropdownIconColor={theme.colors.primary}
-                                >
-                                    <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
-                                    {selectedTop.children?.map((sub) => (
-                                        <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
-                                    ))}
-                                </Picker>
-                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
+                                <View style={{ zIndex: subCategoryOpen ? 9999 : 1}}>
+                                    <DropDownPicker
+                                        open={subCategoryOpen}
+                                        value={subCategoryValue}
+                                        items={subCategoryItems}
+                                        setOpen={setSubCategoryOpen}
+                                        setValue={setSubCategoryValue}
+                                        setItems={setSubCategoryItems}
+                                        modalProps={{
+                                            animationType: 'slide',
+                                        }}
+                                        onChangeValue={(catID) => {
+                                            selectedTop?.children.find((cat) => {
+                                                if (cat.id === catID) {
+                                                    setSelectedSecond(cat);
+                                                    setSelectedThird(null);
+                                                    setLowestCategoryValue(null);
+                                                }
+                                            });
+                                        }}
+                                        listMode="MODAL"
+                                    />
+                                </View>
                             </View>
                         </View>
                     )}
@@ -386,21 +457,27 @@ export default function SellScreen() {
                         <View style={styles.inputGroup as ViewStyle}>
                             <Text style={styles.label as TextStyle}>Sub-category</Text>
                             <View style={styles.pickerContainer as ViewStyle}>
-                                <Picker
-                                    selectedValue={selectedThird?.id ?? ''}
-                                    onValueChange={(subCatID) => {
-                                        const subCategory = selectedSecond.children?.find((sub) => sub.id === subCatID);
-                                        setSelectedThird(subCategory);
-                                    }}
-                                    style={styles.picker as TextStyle}
-                                    dropdownIconColor={theme.colors.primary}
-                                >
-                                    <Picker.Item label="Select a sub-category" value="" color={theme.colors.textLight} />
-                                    {selectedSecond.children?.map((sub) => (
-                                        <Picker.Item key={sub.id} label={sub.name} value={sub.id} color={theme.colors.text} />
-                                    ))}
-                                </Picker>
-                                <Ionicons name="chevron-down" size={20} color={theme.colors.textLight} style={styles.pickerIcon as TextStyle} />
+                                <View style={{ zIndex: subCategoryOpen ? 9999 : 1}}>
+                                    <DropDownPicker
+                                        open={lowestCategoryOpen}
+                                        value={lowestCategoryValue}
+                                        items={lowestCategoryItems}
+                                        setOpen={setLowestCategoryOpen}
+                                        setValue={setLowestCategoryValue}
+                                        setItems={setLowestCategoryItems}
+                                        modalProps={{
+                                            animationType: 'slide',
+                                        }}
+                                        onChangeValue={(catID) => {
+                                            selectedSecond?.children.find((cat) => {
+                                                if (cat.id === catID) {
+                                                    setSelectedThird(cat);
+                                                }
+                                            })
+                                        }}
+                                        listMode="MODAL"
+                                    />
+                                </View>
                             </View>
                         </View>
                     )}
@@ -435,14 +512,7 @@ export default function SellScreen() {
                     }}
                     style={styles.submitButtonWrapper as ViewStyle}
                     disabled={
-                        !images.length ||
-                        !selectedTop ||
-                        !selectedSecond ||
-                        !description ||
-                        !title ||
-                        !condition ||
-                        !price ||
-                        !address
+                        isDisabled()
                     }
                     activeOpacity={0.8}
                 >

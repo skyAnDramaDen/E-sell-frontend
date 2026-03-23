@@ -1,4 +1,4 @@
-import {Text, View, Pressable, StyleSheet, ScrollView, ViewStyle, TextStyle} from "react-native";
+import {Text, View, Pressable, StyleSheet, ScrollView, ViewStyle, TextStyle, StatusBar} from "react-native";
 import {LinearGradient} from 'expo-linear-gradient';
 import SellButton from "../../../components/SellButton";
 import {useNavigation, useRouter} from "expo-router";
@@ -8,6 +8,7 @@ import ProductCategoryCard from "../../../components/ProductCategoryCard";
 import { Ionicons } from "@expo/vector-icons"; import { TouchableOpacity } from "react-native"
 import React from "react";
 import { styles } from "../../../src/styles/styles";
+import { useFonts, Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 
 import { theme } from "../../../src/theme/theme";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -16,10 +17,17 @@ export default function Index() {
     const router = useRouter();
     const navigation = useNavigation<DrawerNavigationProp<any>>();
 
+    const [fontsLoaded] = useFonts({
+        Pacifico_400Regular,
+    });
+
+    if (!fontsLoaded) return null;
+
     return (
         <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
                       edges={["top", "left", "right"]}
         >
+            <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer as ViewStyle}>
                 <View style={styles.header as ViewStyle}>
                     <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton as ViewStyle}>
@@ -31,7 +39,7 @@ export default function Index() {
                         end={{ x: 1, y: 0 }}
                         style={styles.titleGradient as ViewStyle}
                     >
-                        <Text style={styles.title as TextStyle}>Marketplace</Text>
+                        <Text style={{ fontFamily: 'Pacifico_400Regular', fontSize: 20 }}>E-Sell</Text>
                     </LinearGradient>
                 </View>
 
@@ -81,31 +89,3 @@ export default function Index() {
         </SafeAreaView>
     );
 }
-
-
-const local_styles = StyleSheet.create({
-    header: {
-        height: 60,
-        justifyContent: "center",
-    },
-
-    menuButton: {
-        position: "absolute",
-        left: 15,
-        zIndex: 10,
-    },
-
-    titleGradient: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        paddingVertical: 8,
-        alignItems: "center",
-    },
-
-    title: {
-        fontSize: 20,
-        fontWeight: "600",
-        color: "#fff",
-    },
-})

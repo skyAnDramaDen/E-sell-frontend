@@ -1,7 +1,6 @@
 import React from "react";
-import {Text, View, TouchableOpacity, StyleSheet, TextStyle} from "react-native";
+import {Text, TouchableOpacity, TextStyle} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import {Ionicons} from "@expo/vector-icons";
 import {theme} from "../src/theme/theme";
 import { styles } from "../src/styles/styles";
 import {ImageStyle} from "expo-image";

@@ -2,31 +2,24 @@
 import {
     View,
     Text,
-    Image,
-    StyleSheet,
-    TouchableOpacity,
-    ScrollView,
-    TextInput,
     FlatList,
     Dimensions, SafeAreaView
 } from "react-native";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 import ListingCard from "../../components/ListingCard";
 import { theme } from "../../src/theme/theme";
 
  import {
-    Product,
     AllListings,
 } from "../../types/interfaces";
-
-import {get_listing, get_listings} from "../../services/listingsService";
-
+ import MultiActionButton from "../../components/MultiActionButton";
+import { get_listings } from "../../services/listingsService";
 import { useAuth } from "../../hooks/useAuth";
 
-import MultiActionButton from "../../components/MultiActionButton";
+
 export default function Listings() {
      const router = useRouter();
-     const { login, loading, error, user } = useAuth();
+     const { user } = useAuth();
 
      const [listings, setListings] = useState<AllListings>([]);
 
@@ -54,7 +47,10 @@ export default function Listings() {
          }
 
          load_list();
-     }, [user])
+
+         //removed user as dependency as it was spamming calls to the
+         //backend and slowing everything down? find out why
+     }, [])
 
      return (
          <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}

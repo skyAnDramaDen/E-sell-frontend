@@ -1,22 +1,15 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import {
     Text,
     View,
     TouchableOpacity,
-    FlatList,
     Image,
-    Pressable,
-    Modal,
-    StyleSheet,
-    StyleProp,
-    ViewStyle
+    StyleSheet
 } from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import { useRouter} from "expo-router";
 
 import {
-    Listing,
-    Product
+    Listing
 } from "../types/interfaces";
 
 export default function ListProduct({ item, width }: { item: Listing, width?: number }) {
@@ -79,24 +72,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         flexShrink: 1,
     },
-
-
-    // listing_info_card: {
-    //     display: "flex",
-    //     flexDirection: "row",
-    //     alignItems: "center",
-    //     justifyContent: "space-between"
-    // },
-    //
-    // details: {
-    //     flex: 1,
-    //     // justifyContent: "space-between",
-    // },
-    //
-    // name: {
-    //     fontSize: 16,
-    //     fontWeight: "600",
-    // },
 
     price: {
         fontSize: 16,

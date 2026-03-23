@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
         paddingBottom: theme.spacing.xl,
         width: '100%'
     },
+
+    // scrollContainer: {
+    //     padding: theme.spacing.sm,
+    //     paddingBottom: theme.spacing.xl,
+    // },
     registerLink: {
         alignSelf: 'center',
     },
@@ -22,6 +27,12 @@ export const styles = StyleSheet.create({
     registerHighlight: {
         color: theme.colors.primary,
         textDecorationLine: 'underline',
+    },
+    description: {
+        fontSize: 16,
+        lineHeight: 24,
+        color: theme.colors.text,
+        marginTop: theme.spacing.xs,
     },
     form: {
         flex: 1,
@@ -180,8 +191,14 @@ export const styles = StyleSheet.create({
     placeholderText: {
         fontSize: 16,
         color: theme.colors.textLight,
-        marginBottom: theme.spacing.md,
+        marginBottom: theme.spacing.xs,
         fontStyle: 'italic',
+    },
+
+    listingPlaceholderText: {
+        marginTop: theme.spacing.sm,
+        fontSize: 16,
+        color: theme.colors.textLight,
     },
     card: {
         width: '100%',
@@ -283,7 +300,7 @@ export const styles = StyleSheet.create({
         marginBottom: 16,
     },
     titleGradient: {
-        paddingVertical: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
         paddingHorizontal: theme.spacing.lg,
         borderRadius: theme.borderRadius.lg,
         ...theme.shadows.md,
@@ -419,6 +436,21 @@ export const styles = StyleSheet.create({
         borderColor: theme.colors.border,
         ...theme.shadows.sm,
     },
+
+
+    // backButton: {
+    //     flexDirection: 'row',
+    //     alignItems: 'center',
+    //     alignSelf: 'flex-start',
+    //     paddingVertical: theme.spacing.sm,
+    //     paddingHorizontal: theme.spacing.md,
+    //     marginBottom: theme.spacing.lg,
+    //     backgroundColor: theme.colors.surface,
+    //     borderRadius: theme.borderRadius.lg,
+    //     borderWidth: 1,
+    //     borderColor: theme.colors.border,
+    //     ...theme.shadows.sm,
+    // },
 
     multiActionButton: {
         flexDirection: 'row',
@@ -594,6 +626,106 @@ export const styles = StyleSheet.create({
         borderRadius: theme.borderRadius.lg,
     },
     submitText: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#fff',
+    },
+    imageCarousel: {
+        marginBottom: theme.spacing.sm,
+        borderRadius: theme.borderRadius.lg,
+        overflow: 'hidden',
+        ...theme.shadows.md,
+    },
+    image: {
+        width: "100%",
+        height: 250,
+        resizeMode: 'cover',
+        borderRadius: theme.borderRadius.lg,
+        marginRight: theme.spacing.sm,
+    },
+    imagePlaceholder: {
+        width: '100%',
+        height: 200,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: theme.spacing.sm,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+        borderStyle: 'dashed',
+        ...theme.shadows.sm,
+    },
+    infoCard: {
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        padding: theme.spacing.lg,
+        marginBottom: theme.spacing.sm,
+        ...theme.shadows.md,
+    },
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing.md,
+    },
+    productName: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: theme.colors.text,
+        flex: 1,
+        marginRight: theme.spacing.md,
+    },
+    productPrice: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: theme.colors.primary,
+    },
+    metaContainer: {
+        marginTop: theme.spacing.sm,
+    },
+    metaItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: theme.spacing.xs,
+    },
+    metaText: {
+        marginLeft: theme.spacing.sm,
+        fontSize: 14,
+        color: theme.colors.textLight,
+    },
+    sellerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: theme.spacing.sm,
+    },
+    sellerInfo: {
+        marginLeft: theme.spacing.md,
+    },
+    sellerName: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: theme.colors.text,
+    },
+    sellerJoined: {
+        fontSize: 14,
+        color: theme.colors.textLight,
+        marginTop: 2,
+    },
+    contactButtonWrapper: {
+        marginTop: theme.spacing.sm,
+        borderRadius: theme.borderRadius.lg,
+        overflow: 'hidden',
+        ...theme.shadows.md,
+    },
+    contactButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: theme.spacing.lg,
+        paddingHorizontal: theme.spacing.xl,
+    },
+    contactButtonText: {
         fontSize: 18,
         fontWeight: '700',
         color: '#fff',

@@ -37,20 +37,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         auth: { token },
                     });
 
-                    newSocket.on("connect", () => {
-                        console.log("✅ Connected with socket id:", newSocket.id);
-                    });
-                    newSocket.on("connect_error", (err) => {
-                        console.log("❌ Socket connection error:", err);
-                    });
-                    newSocket.on("disconnect", () => {
-                        console.log("🔌 Disconnected");
-                    });
-
                     newSocket.connect();
                     setSocket(newSocket);
-                } catch (e) {
-                    console.error("❌ Socket creation exception:", e);
+                } catch (error) {
+                    console.error("❌ Socket creation exception:", error);
                 }
             } else {
                 return;

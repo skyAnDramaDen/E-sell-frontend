@@ -47,11 +47,6 @@ export default function Profile() {
         setUserData(prev => ({...prev, [key]: value}));
     };
 
-    useEffect(() => {
-        // console.log(userData);
-        console.log(editMode);
-    }, [userData, editMode]);
-
     const handleSubmit = async () => {
         const formData = new FormData();
         if (userData.phoneNumber) {
@@ -115,7 +110,7 @@ export default function Profile() {
                 fetched_user = await get_user(user.id);
 
                 if (fetched_user) {
-                    const fetched_user_number = "0" + fetched_user.user.phoneNumber;
+                    const fetched_user_number = fetched_user.user.phoneNumber || "";
                     setUserData({
                         id: fetched_user.user.id,
                         username: fetched_user.user.username,

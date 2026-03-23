@@ -6,27 +6,20 @@ import {
     StyleSheet,
     TouchableOpacity,
     ScrollView,
-    TextInput,
     ViewStyle,
     TextStyle,
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context"
-import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
-import { Picker } from '@react-native-picker/picker';
 import {useLocalSearchParams, useRouter} from "expo-router";
 import { theme } from "../../src/theme/theme";
 import { Ionicons } from '@expo/vector-icons';
 import { styles as globalStyles } from '../../src/styles/styles';
 
-import {
-    Product
-} from "../../types/interfaces";
 
 import { get_listing } from "../../services/listingsService";
 
 import { useAuth } from "../../hooks/useAuth";
-import ActionButton from "../../components/ActionButton";
 import MultiActionButton from "../../components/MultiActionButton";
 import {
     ProductAndSellerResponseBody
@@ -34,7 +27,7 @@ import {
 
 export default function Listing() {
     const router = useRouter();
-    const { login, loading, error, user } = useAuth();
+    const { user } = useAuth();
     const [loadingPage, setLoadingPage] = useState(true);
 
     const [product, setProduct] = useState<ProductAndSellerResponseBody | null>(null);
@@ -44,6 +37,7 @@ export default function Listing() {
     const listing_id = Array.isArray(id) ? id[0] : id;
 
     useEffect(() => {
+        console.log(product);
         async function load() {
             const fetched_product = await get_listing(listing_id);
 
@@ -75,7 +69,6 @@ export default function Listing() {
     return (
         <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
                       edges={["top", "left", "right"]}
-            // edges={["top"]}
         >
             <ScrollView
                 contentContainerStyle={localStyles.scrollContainer}
@@ -85,7 +78,7 @@ export default function Listing() {
                     <MultiActionButton
                         name="Back"
                         icon="arrow-back"
-                        onPress={() => router.back()}
+                        onPress={() => router.replace("/listing")}
                     />
                 </View>
 
@@ -134,46 +127,52 @@ export default function Listing() {
                     <Text style={localStyles.description}>{product.description}</Text>
                 </View>
 
-                <View style={globalStyles.section as ViewStyle}>
-                    <Text style={globalStyles.sectionTitle as TextStyle}>Seller</Text>
-                    <View style={localStyles.sellerRow}>
-                        <Ionicons name="person-circle-outline" size={48} color={theme.colors.primary} />
-                        <View style={localStyles.sellerInfo}>
-                            <Text style={localStyles.sellerName}>{product.sellerName}</Text>
-                            <Text style={localStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
+                {
+                    user && product && user.id != product.sellerId && (
+                        <View>
+                            <View style={globalStyles.section as ViewStyle}>
+                                <Text style={globalStyles.sectionTitle as TextStyle}>Seller</Text>
+                                <View style={localStyles.sellerRow}>
+                                    <Ionicons name="person-circle-outline" size={48} color={theme.colors.primary} />
+                                    <View style={localStyles.sellerInfo}>
+                                        <Text style={localStyles.sellerName}>{product.sellerName}</Text>
+                                        <Text style={localStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (product) {
+                                        router.push({
+                                            pathname: "/chat/0" as any,
+                                            params: {
+                                                buyerId: user?.id,
+                                                buyerName: user?.username,
+                                                sellerId: product.sellerId,
+                                                sellerName: product.sellerName,
+                                            },
+                                        });
+                                    }
+                                }}
+                                activeOpacity={0.8}
+                                style={localStyles.contactButtonWrapper}
+                            >
+                                <LinearGradient
+                                    colors={[theme.colors.primary, theme.colors.secondary]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={localStyles.contactButton}
+                                >
+                                    <Ionicons name="chatbubble-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
+                                    <Text style={localStyles.contactButtonText} onPress={() => {
+
+                                    }} >Message Seller</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
                         </View>
-                    </View>
-                </View>
-
-                <TouchableOpacity
-                    onPress={() => {
-                        if (product) {
-                            router.push({
-                                pathname: "/chat/0" as any,
-                                params: {
-                                    buyerId: user?.id,
-                                    buyerName: user?.username,
-                                    sellerId: product.sellerId,
-                                    sellerName: product.sellerName,
-                                },
-                            });
-                        }
-                    }}
-                    activeOpacity={0.8}
-                    style={localStyles.contactButtonWrapper}
-                >
-                    <LinearGradient
-                        colors={[theme.colors.primary, theme.colors.secondary]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={localStyles.contactButton}
-                    >
-                        <Ionicons name="chatbubble-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
-                        <Text style={localStyles.contactButtonText} onPress={() => {
-
-                        }} >Message Seller</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
+                    )
+                }
 
                 <View style={{ height: theme.spacing.xl }} />
             </ScrollView>
@@ -298,7 +297,7 @@ const localStyles = StyleSheet.create({
         marginTop: 2,
     },
     contactButtonWrapper: {
-        marginTop: theme.spacing.lg,
+        marginTop: theme.spacing.sm,
         borderRadius: theme.borderRadius.lg,
         overflow: 'hidden',
         ...theme.shadows.md,
