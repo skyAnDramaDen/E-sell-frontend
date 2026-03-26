@@ -1,14 +1,15 @@
-import {StackScreen} from "react-native-screens";
 import {Ionicons} from "@expo/vector-icons";
-
-import react from "react";
 import {Tabs} from "expo-router";
+import { useTheme } from "../../../hooks/useTheme";
 
 export default function TabsLayout() {
+    const { isDark, theme }  = useTheme();
     return (
         <Tabs screenOptions={{headerShown: false,
-            tabBarStyle: { paddingTop: 0 },
-            sceneStyle: { paddingTop: 0 },}}>
+            tabBarStyle: { paddingTop: 0, backgroundColor: theme.colors.surface, },
+            sceneStyle: { paddingTop: 0 },
+            tabBarActiveTintColor: theme.colors.primary,
+            tabBarInactiveTintColor: theme.colors.textLight,}}>
             <Tabs.Screen name="index" options={{
             title: "Home",
             tabBarIcon: ({color, size}) => (<Ionicons name="home" size={size} color={color}/>),

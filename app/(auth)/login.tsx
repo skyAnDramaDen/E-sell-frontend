@@ -13,7 +13,8 @@ import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 
 import {showMessage} from "react-native-flash-message";
-import {theme} from "../../src/theme/theme";
+import { useTheme } from "../../hooks/useTheme";
+import { styles as globalStyles } from "../../src/styles/styles";
 
 export default function LoginScreen() {
     const { login, loading, error } = useAuth();
@@ -21,6 +22,8 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
     const router = useRouter();
     const [loginLoading, setLoginLoading] = useState(false);
+    const { isDark, toggleTheme, theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     const handleSubmit = async () => {
         setLoginLoading(true);
@@ -45,26 +48,26 @@ export default function LoginScreen() {
 
     if (loading) {
         return (
-            <View style={localStyles.loadingContainer as ViewStyle}>
+            <View style={pageStyles.loadingContainer as ViewStyle}>
                 <LottieView
                     source={require("../../assets/loading.json")}
                     autoPlay
                     loop
                     style={{ width: 200, height: 200 }}
                 />
-                <Text style={localStyles.loadingText as TextStyle}>Hang tight...</Text>
+                <Text style={pageStyles.loadingText as TextStyle}>Hang tight...</Text>
             </View>
         );
     }
 
     return (
-        <View style={localStyles.outerContainer as ViewStyle}>
-            <View style={localStyles.formWrapper as ViewStyle}>
-                <Text style={localStyles.title as TextStyle}>Login</Text>
+        <View style={pageStyles.outerContainer as ViewStyle}>
+            <View style={pageStyles.formWrapper as ViewStyle}>
+                <Text style={pageStyles.loginTitle as TextStyle}>Login</Text>
 
-                <Text style={localStyles.label as TextStyle}>Email</Text>
+                <Text style={pageStyles.loginLabel as TextStyle}>Email</Text>
                 <TextInput
-                    style={localStyles.input as TextStyle}
+                    style={pageStyles.loginInput as TextStyle}
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
@@ -73,9 +76,9 @@ export default function LoginScreen() {
                     placeholderTextColor={theme.colors.textLight}
                 />
 
-                <Text style={localStyles.label as TextStyle}>Password</Text>
+                <Text style={pageStyles.loginLabel as TextStyle}>Password</Text>
                 <TextInput
-                    style={localStyles.input as TextStyle}
+                    style={pageStyles.loginInput as TextStyle}
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry
@@ -84,97 +87,28 @@ export default function LoginScreen() {
                 />
 
                 <TouchableOpacity
-                    style={[localStyles.button as ViewStyle, loading && localStyles.buttonDisabled]}
+                    style={[pageStyles.loginButton as ViewStyle, loading && pageStyles.buttonDisabled]}
                     onPress={handleSubmit}
                     disabled={loading}
                 >
                     {loading ? (
                         <ActivityIndicator color="#fff" />
                     ) : (
-                        <Text style={localStyles.buttonText as TextStyle}>Login</Text>
+                        <Text style={pageStyles.loginButtonText as TextStyle}>Login</Text>
                     )}
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={localStyles.registerLink as ViewStyle}
+                    style={pageStyles.registerLink as ViewStyle}
                     onPress={() => router.push("/(auth)/register")}
                     disabled={loading}
                 >
-                    <Text style={localStyles.registerText as TextStyle}>
+                    <Text style={pageStyles.loginRegisterText as TextStyle}>
                         Don't have an account?{" "}
-                        <Text style={localStyles.registerHighlight as TextStyle}>Register here</Text>
+                        <Text style={pageStyles.registerHighlight as TextStyle}>Register here</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
-
-const localStyles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-        paddingHorizontal: theme.spacing.md,
-        marginTop: theme.spacing.xl * 5,
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingText: {
-        ...theme.typography.body,
-        color: theme.colors.text,
-        marginTop: theme.spacing.md,
-    },
-    formWrapper: {
-
-    },
-    title: {
-        ...theme.typography.h2,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.lg,
-    },
-    label: {
-        ...theme.typography.caption,
-        color: theme.colors.textLight,
-        marginBottom: theme.spacing.xs,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        borderRadius: theme.borderRadius.sm,
-        padding: theme.spacing.md,
-        marginBottom: theme.spacing.md,
-        fontSize: theme.typography.body.fontSize,
-        color: theme.colors.text,
-        backgroundColor: theme.colors.surface,
-    },
-    button: {
-        backgroundColor: theme.colors.primary,
-        padding: theme.spacing.md,
-        borderRadius: theme.borderRadius.lg,
-        alignItems: 'center',
-        marginBottom: theme.spacing.md,
-        ...theme.shadows.sm,
-    },
-    buttonDisabled: {
-        opacity: 0.5,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: theme.typography.body.fontSize,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-    registerLink: {
-        alignSelf: 'center',
-    },
-    registerText: {
-        // ...theme.typography.body,
-        color: theme.colors.text,
-    },
-    registerHighlight: {
-        color: theme.colors.primary,
-        textDecorationLine: 'underline',
-    },
-});

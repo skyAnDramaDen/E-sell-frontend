@@ -1,20 +1,22 @@
 import React from "react";
 import {Text, TouchableOpacity, TextStyle} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import {theme} from "../src/theme/theme";
-import { styles } from "../src/styles/styles";
+import { useTheme } from "../hooks/useTheme";
+import { styles as globalStyles } from "../src/styles/styles";
 import {ImageStyle} from "expo-image";
 
 function ActionButton ({ name, onPress,}: { name: string, onPress: () => void, }) {
+    const { theme } = useTheme();
+    const pageStyles = globalStyles(theme)
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.7} >
             <LinearGradient
-                colors={["#fff", "#fff"]}
+                colors={[theme.colors.surface, theme.colors.surface]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={[styles.gradient as ImageStyle, { marginRight: theme.spacing.sm }]}
+                style={[pageStyles.gradient as ImageStyle]}
             >
-                <Text style={styles.text as TextStyle}>{name}</Text>
+                <Text style={pageStyles.text as TextStyle}>{name}</Text>
             </LinearGradient>
         </TouchableOpacity>
     );

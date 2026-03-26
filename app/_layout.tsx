@@ -1,23 +1,17 @@
-import { Stack, SplashScreen } from "expo-router";
+import { Stack } from "expo-router";
 import React from 'react';
-import { AuthProvider, AuthContext } from "../contexts/AuthContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import { useFonts } from 'expo-font';
-import { useContext } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets, } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, } from 'react-native-safe-area-context';
 import FlashMessage from "react-native-flash-message";
 
 import "./globals.css";
+import { ThemeProvider } from "../contexts/ThemeContext";
 
 function RootLayoutContent() {
     const insets = useSafeAreaInsets();
     return (
-        // <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
-        //     // edges={["top"]}
-        // >
-        //
-        //
-        // </SafeAreaView>
         <>
             <Stack
                 screenOptions = {{
@@ -29,13 +23,13 @@ function RootLayoutContent() {
                 <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
                 <Stack.Screen name="(auth)/register" options={{ headerShown: false }} />
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="(drawer)" />   /
                 <Stack.Screen name="listing/index" options={{ headerShown: false }} />
             </Stack>
             <FlashMessage position="top" />
         </>
     );
 }
-
 
 export default function RootLayout() {
     const [fontsLoaded] = useFonts({
@@ -50,10 +44,11 @@ export default function RootLayout() {
         );
     }
 
-
     return (
-        <AuthProvider>
-            <RootLayoutContent />
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <RootLayoutContent />
+            </AuthProvider>
+        </ThemeProvider>
     );
 }

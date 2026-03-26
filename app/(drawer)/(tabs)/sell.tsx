@@ -12,10 +12,9 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import { LinearGradient } from "expo-linear-gradient";
-import { Picker } from '@react-native-picker/picker';
 import { useRouter, useNavigation } from "expo-router";
 import { useAuth } from "../../../hooks/useAuth";
-import { styles } from "../../../src/styles/styles";
+import { styles as globalStyles } from "../../../src/styles/styles";
 
 import {
     CategoryNode
@@ -28,7 +27,7 @@ import {DrawerNavigationProp} from "@react-navigation/drawer";
 import {Ionicons} from "@expo/vector-icons";
 import { pickImage, takePhoto } from "../../../utils/imagePicker";
 import { create_listing } from "../../../services/listingsService";
-import { theme } from "../../../src/theme/theme";
+import { useTheme } from "../../../hooks/useTheme";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ImageStyle} from "expo-image";
 import {showMessage} from "react-native-flash-message";
@@ -57,6 +56,9 @@ export default function SellScreen() {
 
     const galleryButtonScale = useRef(new Animated.Value(1)).current;
     const cameraButtonScale = useRef(new Animated.Value(1)).current;
+
+    const { isDark, toggleTheme, theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     const [conditionOpen, setConditionOpen] = useState(false);
     const [conditionValue, setConditionValue] = useState(null);
@@ -209,7 +211,12 @@ export default function SellScreen() {
             try {
                 const res = await create_listing(formData);
 
-                router.replace(`/listing/${res.product.id}`);
+                router.replace({
+                    pathname: `/listing/${res.product.id}` as any,
+                    params: {
+                        from: "sell-page"
+                    },
+                });
             } catch (error) {
                 alert("Error");
             }
@@ -226,17 +233,17 @@ export default function SellScreen() {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red', backgroundColor: theme.colors.background  }}
                       edges={["top", "left", "right"]}
         >
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContainer as ViewStyle}
+                contentContainerStyle={[pageStyles.scrollContainer as ViewStyle, { backgroundColor: theme.colors.background }]}
             >
-                <View style={styles.header as ViewStyle}>
+                <View style={pageStyles.header as ViewStyle}>
                     <TouchableOpacity
                         onPress={() => navigation.openDrawer()}
-                        style={styles.menuButton as ViewStyle}
+                        style={pageStyles.menuButton as ViewStyle}
                         activeOpacity={0.7}
                     >
                         <Ionicons name="menu" size={25} color={theme.colors.text} />
@@ -245,15 +252,15 @@ export default function SellScreen() {
                         colors={[theme.colors.primary, theme.colors.secondary]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={styles.titleGradient as ViewStyle}
+                        style={pageStyles.titleGradient as ViewStyle}
                     >
-                        <Text style={styles.title as TextStyle}>Create a Listing</Text>
+                        <Text style={pageStyles.title as TextStyle}>Create a Listing</Text>
                     </LinearGradient>
                 </View>
 
-                <View style={styles.section as ViewStyle}>
-                    <Text style={styles.sectionTitle as TextStyle}>Photos</Text>
-                    <View style={styles.buttonRow as ViewStyle}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Photos</Text>
+                    <View style={pageStyles.buttonRow as ViewStyle}>
                         <Animated.View style={{ transform: [{ scale: galleryButtonScale }], flex: 1 }}>
                             <TouchableOpacity
                                 onPress={async () => {
@@ -265,16 +272,16 @@ export default function SellScreen() {
                                     }
                                 }}
                                 activeOpacity={0.9}
-                                style={styles.flexOne as ViewStyle}
+                                style={pageStyles.flexOne as ViewStyle}
                             >
                                 <LinearGradient
                                     colors={[theme.colors.primary, theme.colors.accent]}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
-                                    style={styles.gradientButton as ViewStyle}
+                                    style={pageStyles.gradientButton as ViewStyle}
                                 >
-                                    <Ionicons name="images" size={20} color="#fff" style={styles.buttonIcon as TextStyle} />
-                                    <Text style={styles.buttonText as TextStyle}>Photos</Text>
+                                    <Ionicons name="images" size={20} color="#fff" style={pageStyles.buttonIcon as TextStyle} />
+                                    <Text style={pageStyles.buttonText as TextStyle}>Photos</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </Animated.View>
@@ -291,16 +298,16 @@ export default function SellScreen() {
                                     }
                                 }}
                                 activeOpacity={0.9}
-                                style={styles.flexOne as ViewStyle}
+                                style={pageStyles.flexOne as ViewStyle}
                             >
                                 <LinearGradient
                                     colors={[theme.colors.secondary, theme.colors.accent]}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
-                                    style={styles.gradientButton as ViewStyle}
+                                    style={pageStyles.gradientButton as ViewStyle}
                                 >
-                                    <Ionicons name="camera" size={20} color="#fff" style={styles.buttonIcon as TextStyle} />
-                                    <Text style={styles.buttonText as TextStyle}>Camera</Text>
+                                    <Ionicons name="camera" size={20} color="#fff" style={pageStyles.buttonIcon as TextStyle} />
+                                    <Text style={pageStyles.buttonText as TextStyle}>Camera</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </Animated.View>
@@ -310,13 +317,13 @@ export default function SellScreen() {
                         <ScrollView
                             horizontal
                             showsHorizontalScrollIndicator={false}
-                            style={styles.imagePreviewContainer as ViewStyle}
+                            style={pageStyles.imagePreviewContainer as ViewStyle}
                         >
                             {images.map((uri, index) => (
-                                <View key={index} style={styles.imageWrapper as ViewStyle}>
-                                    <Image source={{ uri }} style={styles.previewImage as ImageStyle} />
+                                <View key={index} style={pageStyles.imageWrapper as ViewStyle}>
+                                    <Image source={{ uri }} style={pageStyles.previewImage as ImageStyle} />
                                     <TouchableOpacity
-                                        style={styles.removeImageButton as ViewStyle}
+                                        style={pageStyles.removeImageButton as ViewStyle}
                                         onPress={() => setImages(images.filter((_, i) => i !== index))}
                                     >
                                         <Ionicons name="close-circle" size={22} color={theme.colors.error} />
@@ -327,48 +334,48 @@ export default function SellScreen() {
                     )}
                 </View>
 
-                <View style={styles.section as ViewStyle}>
-                    <Text style={styles.sectionTitle as TextStyle}>Title</Text>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Title</Text>
 
-                    <View style={styles.inputGroup as ViewStyle}>
-                        <Text style={styles.label as TextStyle}>Name</Text>
+                    <View style={pageStyles.inputGroup as ViewStyle}>
+                        <Text style={pageStyles.label as TextStyle}>Name</Text>
                         <TextInput
                             placeholder="e.g., Vintage Leather Jacket"
                             placeholderTextColor={theme.colors.textLight}
                             value={title}
                             onChangeText={setTitle}
-                            style={styles.input as TextStyle}
+                            style={pageStyles.input as TextStyle}
                         />
                     </View>
 
-                    <View style={styles.inputGroup as ViewStyle}>
-                        <Text style={styles.label as TextStyle}>Description</Text>
+                    <View style={pageStyles.inputGroup as ViewStyle}>
+                        <Text style={pageStyles.label as TextStyle}>Description</Text>
                         <TextInput
                             placeholder="Describe your item..."
                             placeholderTextColor={theme.colors.textLight}
                             value={description}
                             onChangeText={setDescription}
-                            style={[styles.input as TextStyle, styles.textArea as TextStyle]}
+                            style={[pageStyles.input as TextStyle, pageStyles.textArea as TextStyle]}
                             multiline
                             numberOfLines={4}
                         />
                     </View>
 
-                    <View style={styles.row as ViewStyle}>
-                        <View style={[styles.inputGroup as ViewStyle, styles.flexOne as ViewStyle, styles.marginRight as ViewStyle]}>
-                            <Text style={styles.label as TextStyle}>Price (£)</Text>
+                    <View style={pageStyles.row as ViewStyle}>
+                        <View style={[pageStyles.inputGroup as ViewStyle, pageStyles.flexOne as ViewStyle, pageStyles.marginRight as ViewStyle]}>
+                            <Text style={pageStyles.label as TextStyle}>Price (£)</Text>
                             <TextInput
                                 placeholder="0.00"
                                 placeholderTextColor={theme.colors.textLight}
                                 value={price !== null ? price.toString() : ''}
                                 onChangeText={(text) => setPrice(Number(text))}
-                                style={styles.input as TextStyle}
+                                style={pageStyles.input as TextStyle}
                                 keyboardType="numeric"
                             />
                         </View>
 
-                        <View style={[styles.inputGroup as ViewStyle, styles.flexOne as ViewStyle]}>
-                            <Text style={styles.label as TextStyle}>Condition</Text>
+                        <View style={[pageStyles.inputGroup as ViewStyle, pageStyles.flexOne as ViewStyle]}>
+                            <Text style={pageStyles.label as TextStyle}>Condition</Text>
 
                             <View style={{ zIndex: conditionOpen ? 9999 : 1}}>
                                 <DropDownPicker
@@ -385,18 +392,26 @@ export default function SellScreen() {
                                     onChangeValue={(condition_value) => {
                                         setCondition(condition_value);
                                     }}
+                                    style={[pageStyles.pickerInput]}
+                                    placeholderStyle={{
+                                        color: theme.colors.text
+                                    }}
+
+                                    labelStyle={{
+                                        color: theme.colors.text,
+                                    }}
                                 />
                             </View>
                         </View>
                     </View>
                 </View>
 
-                <View style={styles.section as ViewStyle}>
-                    <Text style={styles.sectionTitle  as TextStyle}>Category</Text>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle  as TextStyle}>Category</Text>
 
-                    <View style={styles.inputGroup as ViewStyle}>
-                        <Text style={styles.label as TextStyle}>Category</Text>
-                        <View style={styles.pickerContainer as ViewStyle}>
+                    <View style={pageStyles.inputGroup as ViewStyle}>
+                        <Text style={pageStyles.label as TextStyle}>Category</Text>
+                        <View style={pageStyles.pickerContainer as ViewStyle}>
                             <View style={{ zIndex: topCategoryOpen ? 9999 : 1}}>
                                 <DropDownPicker
                                     open={topCategoryOpen}
@@ -417,15 +432,23 @@ export default function SellScreen() {
                                         setLowestCategoryValue(null);
                                     }}
                                     listMode="MODAL"
+                                    style={[pageStyles.pickerInput]}
+                                    placeholderStyle={{
+                                        color: theme.colors.text
+                                    }}
+
+                                    labelStyle={{
+                                        color: theme.colors.text,
+                                    }}
                                 />
                             </View>
                         </View>
                     </View>
 
                     {selectedTop && (
-                        <View style={styles.inputGroup as ViewStyle}>
-                            <Text style={styles.label as TextStyle}>Sub-category</Text>
-                            <View style={styles.pickerContainer as ViewStyle}>
+                        <View style={pageStyles.inputGroup as ViewStyle}>
+                            <Text style={pageStyles.label as TextStyle}>Sub-category</Text>
+                            <View style={pageStyles.pickerContainer as ViewStyle}>
                                 <View style={{ zIndex: subCategoryOpen ? 9999 : 1}}>
                                     <DropDownPicker
                                         open={subCategoryOpen}
@@ -447,6 +470,15 @@ export default function SellScreen() {
                                             });
                                         }}
                                         listMode="MODAL"
+                                        style={[pageStyles.pickerInput]}
+                                        placeholderStyle={{
+                                            color: theme.colors.text
+                                        }}
+
+                                        labelStyle={{
+                                            color: theme.colors.text,
+                                        }}
+
                                     />
                                 </View>
                             </View>
@@ -454,9 +486,9 @@ export default function SellScreen() {
                     )}
 
                     {selectedSecond && selectedSecond.children?.length > 0 && (
-                        <View style={styles.inputGroup as ViewStyle}>
-                            <Text style={styles.label as TextStyle}>Sub-category</Text>
-                            <View style={styles.pickerContainer as ViewStyle}>
+                        <View style={pageStyles.inputGroup as ViewStyle}>
+                            <Text style={pageStyles.label as TextStyle}>Sub-category</Text>
+                            <View style={pageStyles.pickerContainer as ViewStyle}>
                                 <View style={{ zIndex: subCategoryOpen ? 9999 : 1}}>
                                     <DropDownPicker
                                         open={lowestCategoryOpen}
@@ -476,6 +508,14 @@ export default function SellScreen() {
                                             })
                                         }}
                                         listMode="MODAL"
+                                        style={[pageStyles.pickerInput]}
+                                        placeholderStyle={{
+                                            color: theme.colors.text
+                                        }}
+
+                                        labelStyle={{
+                                            color: theme.colors.text,
+                                        }}
                                     />
                                 </View>
                             </View>
@@ -483,25 +523,25 @@ export default function SellScreen() {
                     )}
                 </View>
 
-                <View style={styles.section as ViewStyle}>
-                    <Text style={styles.sectionTitle as TextStyle}>Location</Text>
-                    <View style={styles.locationRow as ViewStyle}>
-                        <View style={[styles.flexOne as ViewStyle, styles.marginRight as ViewStyle]}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Location</Text>
+                    <View style={pageStyles.locationRow as ViewStyle}>
+                        <View style={[pageStyles.flexOne as ViewStyle, pageStyles.marginRight as ViewStyle]}>
                             <TextInput
                                 placeholder="Enter address"
                                 placeholderTextColor={theme.colors.textLight}
                                 value={address}
                                 onChangeText={setAddress}
-                                style={styles.input as TextStyle}
+                                style={pageStyles.input as TextStyle}
                             />
                         </View>
                         <TouchableOpacity
                             onPress={getLocation}
-                            style={styles.locationButton as ViewStyle}
+                            style={pageStyles.locationButton as ViewStyle}
                             activeOpacity={0.8}
                         >
                             <Ionicons name="locate" size={22} color={theme.colors.primary} />
-                            <Text style={styles.locationButtonText as TextStyle}>Use my location</Text>
+                            <Text style={pageStyles.locationButtonText as TextStyle}>Use my location</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -510,24 +550,23 @@ export default function SellScreen() {
                     onPress={async () => {
                         await handleSubmit();
                     }}
-                    style={styles.submitButtonWrapper as ViewStyle}
+                    style={pageStyles.submitButtonWrapper as ViewStyle}
                     disabled={
                         isDisabled()
                     }
                     activeOpacity={0.8}
                 >
                     <LinearGradient
-                        colors={['#000000', "#000000"]}
+                        colors={[theme.colors.surface, theme.colors.surface]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={styles.submitButton  as ViewStyle}
+                        style={pageStyles.submitButton  as ViewStyle}
                     >
-                        <Text style={styles.submitText as TextStyle}>Create Listing</Text>
+                        <Text style={pageStyles.submitText as TextStyle}>Create Listing</Text>
                         <Ionicons name="arrow-forward" size={20} color="#fff" style={{ marginLeft: 8 }} />
                     </LinearGradient>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
-
     );
 }

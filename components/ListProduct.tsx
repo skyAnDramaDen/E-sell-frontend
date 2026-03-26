@@ -7,83 +7,46 @@ import {
     StyleSheet
 } from "react-native";
 import { useRouter} from "expo-router";
+import { useTheme } from "../hooks/useTheme";
+import { styles as globalStyles } from "../src/styles/styles";
 
 import {
     Listing
 } from "../types/interfaces";
+import TextTicker from "react-native-text-ticker";
 
 export default function ListProduct({ item, width }: { item: Listing, width?: number }) {
     const router = useRouter();
+    const { isDark, theme }  = useTheme();
+    const pageStyles = globalStyles(theme);
     return (
         <TouchableOpacity
-            style={[styles.container, { width }]}
+            style={[pageStyles.listProductContainer, { width }, { backgroundColor: theme.colors.surface}]}
             onPress={() => {
-                router.push(`/listing/${item.product.id}`);
+                router.push({
+                    pathname: `/listing/${item.product.id}` as any,
+                    params: {
+                        from: "search-page"
+                    }
+                })
             }}
         >
             <Image
                 source={{ uri: item.images[0] }}
-                style={styles.list_product_image}
+                style={pageStyles.list_product_image}
             />
 
-            <View style={styles.details}>
-                <View style={styles.listing_info_card}>
-                    <Text style={styles.name}>{item.product.name}</Text>
-                    {item.product.price && <Text style={styles.price}>£{item.product.price}</Text>}
+            <View style={pageStyles.details}>
+                <View style={pageStyles.listing_info_card}>
+                    <TextTicker style={{ fontSize: 18, fontWeight: "600", width: 120, color: theme.colors.text }} duration={6000} loop bounce={false} repeatSpacer={50} marqueeDelay={1000} >{item.product.name} </TextTicker>
+                    {item.product.price && <Text style={pageStyles.price}>£{item.product.price}</Text>}
                 </View>
-                {item.product.topCategory && <Text style={styles.category}
-                                                   numberOfLines={1}
+                {item.product.topCategory && <TextTicker style={pageStyles.category}
+                                                         duration={6000} loop bounce={false} repeatSpacer={50} marqueeDelay={1000}
+
                                                    ellipsizeMode="tail"
-                >{item.product.lowestCategory}</Text>}
+                >{item.product.lowestCategory}</TextTicker>}
             </View>
         </TouchableOpacity>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: "column",
-        padding: 12,
-        backgroundColor: "#fff",
-        borderRadius: 8,
-        marginBottom: 8,
-        gap: 12,
-    },
-
-    list_product_image: {
-        width: 170,
-        height: 170,
-        borderRadius: 8,
-        backgroundColor: "#eee",
-    },
-
-    details: {
-        flex: 1,
-    },
-
-    listing_info_card: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-
-    name: {
-        fontSize: 16,
-        fontWeight: "600",
-        flexShrink: 1,
-    },
-
-    price: {
-        fontSize: 16,
-        color: "#444",
-        // marginTop: 4,
-    },
-
-    category: {
-        fontSize: 12,
-        color: "#777",
-        marginTop: 2,
-    },
-});
-
-

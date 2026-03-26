@@ -1,38 +1,41 @@
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import {View, Text, TouchableOpacity, StyleSheet, Modal, Pressable} from "react-native";
-import { Link } from "expo-router";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {useState, useEffect, useContext} from "react";
-import { AuthProvider, AuthContext } from "../contexts/AuthContext";
+import {View, Text, Modal, Pressable} from "react-native";
+import { useRouter } from "expo-router";
+import {useState, useContext} from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { useTheme } from "../hooks/useTheme";
+import { styles as globalStyles } from "../src/styles/styles";
 
 export default function CustomDrawer(props: any) {
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
     const { logout } = useContext(AuthContext)!;
+    const { theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     return (
         <DrawerContentScrollView {...props}>
 
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Menu</Text>
+            <View style={pageStyles.drawerHeader}>
+                <Text style={pageStyles.drawerHeaderText}>Menu</Text>
             </View>
 
             <DrawerItem
                 label="Profile"
-                labelStyle={styles.label}
-                style={styles.drawerItem}
+                labelStyle={pageStyles.drawerLabel}
+                style={pageStyles.drawerItem}
                 onPress={() => router.push("/profile")}
             />
             <DrawerItem
                 label="Settings"
-                labelStyle={styles.label}
-                style={styles.drawerItem}
+                labelStyle={pageStyles.drawerLabel}
+                style={pageStyles.drawerItem}
                 onPress={() => router.push("/(drawer)/settings" as any)}
             />
             <DrawerItem
                 label="Logout"
-                labelStyle={[styles.label, styles.logout]}
-                style={styles.drawerItem}
+                labelStyle={[pageStyles.drawerLabel, pageStyles.drawerLogout]}
+                style={pageStyles.drawerItem}
                 onPress={() => setShowModal(true)}
             />
             <Modal visible={showModal} transparent animationType="fade" onRequestClose={() => setShowModal(false)}
@@ -78,30 +81,3 @@ export default function CustomDrawer(props: any) {
     );
 }
 
-const styles = StyleSheet.create({
-    header: {
-        // padding: 20,
-        paddingLeft: 16,
-        paddingVertical: 16,
-    },
-    headerText: {
-        fontSize: 20,
-        fontWeight: "600",
-    },
-    drawerItem: {
-        marginVertical: 0,
-        paddingVertical: 0,
-    },
-    row: {
-        paddingVertical: 14,
-        paddingHorizontal: 20,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    label: {
-        fontSize: 16,
-    },
-    logout: {
-        color: "red",
-    },
-});

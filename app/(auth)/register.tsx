@@ -5,7 +5,6 @@ import {
     TextInput,
     TouchableOpacity,
     ActivityIndicator,
-    StyleSheet,
     ViewStyle,
     TextStyle
 } from 'react-native';
@@ -19,7 +18,8 @@ import LottieView from "lottie-react-native";
 import { validatePassword } from "../../utils/passwordVerifier";
 import { username_verifier, email_verifier } from "../../utils/nameVerifier";
 
-import { theme } from "../../src/theme/theme";
+import { useTheme } from "../../hooks/useTheme";
+import { styles as globalStyles } from "../../src/styles/styles";
 
 export default function RegisterScreen() {
     const { register, loading, error } = useAuth();
@@ -28,6 +28,9 @@ export default function RegisterScreen() {
     const [password, setPassword] = useState('');
     const [registerLoading, setRegisterLoading] = useState(false);
     const router = useRouter();
+
+    const { theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     const handleSubmit = async () => {
         try {
@@ -111,35 +114,35 @@ export default function RegisterScreen() {
 
     if (loading) {
         return (
-            <View style={localStyles.loadingContainer}>
+            <View style={pageStyles.loadingContainer}>
                 <LottieView
                     source={require("../../assets/loading.json")}
                     autoPlay
                     loop
                     style={{ width: 200, height: 200 }}
                 />
-                <Text style={localStyles.loadingText as TextStyle}>Hang tight...</Text>
+                <Text style={pageStyles.loadingText as TextStyle}>Hang tight...</Text>
             </View>
         );
     }
 
     return (
-        <View style={localStyles.outerContainer}>
-            <View style={localStyles.formWrapper}>
-                <Text style={localStyles.title as TextStyle}>Register</Text>
+        <View style={pageStyles.outerContainer}>
+            <View style={pageStyles.formWrapper}>
+                <Text style={pageStyles.registerTitle as TextStyle}>Register</Text>
 
-                <Text style={localStyles.label as TextStyle}>Username</Text>
+                <Text style={pageStyles.registerLabel as TextStyle}>Username</Text>
                 <TextInput
-                    style={localStyles.input}
+                    style={pageStyles.registerInput}
                     value={username}
                     onChangeText={setUserName}
                     placeholder="johndoe"
                     placeholderTextColor={theme.colors.textLight}
                 />
 
-                <Text style={localStyles.label as TextStyle}>Email</Text>
+                <Text style={pageStyles.registerLabel as TextStyle}>Email</Text>
                 <TextInput
-                    style={localStyles.input}
+                    style={pageStyles.registerInput}
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
@@ -148,9 +151,9 @@ export default function RegisterScreen() {
                     placeholderTextColor={theme.colors.textLight}
                 />
 
-                <Text style={localStyles.label as TextStyle}>Password</Text>
+                <Text style={pageStyles.registerLabel as TextStyle}>Password</Text>
                 <TextInput
-                    style={localStyles.input}
+                    style={pageStyles.registerInput}
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry
@@ -159,94 +162,26 @@ export default function RegisterScreen() {
                 />
 
                 <TouchableOpacity
-                    style={[localStyles.button, loading && localStyles.buttonDisabled]}
+                    style={[pageStyles.registerButton, loading && pageStyles.buttonDisabled]}
                     onPress={handleSubmit}
                     disabled={loading}
                 >
                     {loading ? (
                         <ActivityIndicator color="#fff" />
                     ) : (
-                        <Text style={localStyles.buttonText}>Register</Text>
+                        <Text style={pageStyles.buttonText}>Register</Text>
                     )}
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={localStyles.registerLink as ViewStyle}
+                    style={pageStyles.registerLink as ViewStyle}
                     onPress={() => router.back()}
                     disabled={loading}
                 >
-                    <Text style={localStyles.registerText as TextStyle}>
-                        <Text style={localStyles.registerHighlight as TextStyle}>Back to login</Text>
+                    <Text style={pageStyles.registerText as TextStyle}>
+                        <Text style={pageStyles.registerHighlight as TextStyle}>Back to login</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 }
-
-
-const localStyles = StyleSheet.create({
-    registerLink: {
-        alignSelf: 'center',
-    },
-    registerText: {
-        // ...theme.typography.body,
-        color: theme.colors.text,
-    },
-    registerHighlight: {
-        color: theme.colors.primary,
-        textDecorationLine: 'underline',
-    },
-    outerContainer: {
-        flex: 1,
-        paddingHorizontal: theme.spacing.md,
-        marginTop: theme.spacing.xl * 5,
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingText: {
-        ...theme.typography.body,
-        color: theme.colors.text,
-        marginTop: theme.spacing.md,
-    },
-    formWrapper: {},
-    title: {
-        ...theme.typography.h2,
-        color: theme.colors.text,
-        marginBottom: theme.spacing.lg,
-    },
-    label: {
-        ...theme.typography.caption,
-        color: theme.colors.textLight,
-        marginBottom: theme.spacing.xs,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        borderRadius: theme.borderRadius.sm,
-        padding: theme.spacing.md,
-        marginBottom: theme.spacing.md,
-        fontSize: theme.typography.body.fontSize,
-        color: theme.colors.text,
-        backgroundColor: theme.colors.surface,
-    },
-    button: {
-        backgroundColor: theme.colors.success,
-        padding: theme.spacing.md,
-        borderRadius: theme.borderRadius.lg,
-        alignItems: 'center',
-        marginBottom: theme.spacing.md,
-        ...theme.shadows.sm,
-    },
-    buttonDisabled: {
-        opacity: 0.5,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: theme.typography.body.fontSize,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-});

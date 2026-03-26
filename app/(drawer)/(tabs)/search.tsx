@@ -15,17 +15,18 @@ import { useFocusEffect } from '@react-navigation/native';
 import {showMessage} from "react-native-flash-message";
 
 import {search_listings} from "../../../services/listingsService";
-import {AllListings, CategoryNode} from "../../../types/interfaces";
+import {AllListings} from "../../../types/interfaces";
 import ListProduct from "../../../components/ListProduct";
 import {Ionicons} from "@expo/vector-icons";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 
 import { useAuth } from "../../../hooks/useAuth";
 import { styles as globalStyles } from "../../../src/styles/styles";
-import { theme } from "../../../src/theme/theme";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ImageStyle} from "expo-image";
 import ActionButton from "../../../components/ActionButton";
+
+import { useTheme } from "../../../hooks/useTheme";
 
 export default function Search() {
     const [query, setQuery] = useState("");
@@ -34,6 +35,8 @@ export default function Search() {
     const params = useLocalSearchParams();
     const [category, setCategory] = useState(params.category as string || "" || null);
     const { user } = useAuth();
+    const { isDark, toggleTheme, theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     const router = useRouter();
 
@@ -80,25 +83,25 @@ export default function Search() {
     }, [query, category])
 
     return (
-        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red', backgroundColor: theme.colors.background  }}
                       edges={["top", "left", "right"]}
         >
-            <View style={globalStyles.container as ViewStyle}>
-                <View style={globalStyles.header as ViewStyle}>
+            <View style={pageStyles.container as ViewStyle}>
+                <View style={pageStyles.header as ViewStyle}>
                     <TouchableOpacity
                         onPress={() => navigation.openDrawer()}
-                        style={globalStyles.iconButton as ViewStyle}
+                        style={pageStyles.menuButton as ViewStyle}
                     >
                         <Ionicons name="menu" size={25} color={theme.colors.text} />
                     </TouchableOpacity>
                 </View>
 
-                <View style={globalStyles.searchBar as ViewStyle}>
+                <View style={pageStyles.searchBar as ViewStyle}>
                     <Ionicons
                         name="search"
                         size={20}
                         color={theme.colors.textLight}
-                        style={globalStyles.searchIcon as ImageStyle}
+                        style={pageStyles.searchIcon as ImageStyle}
                     />
                     <TextInput
                         placeholder="Search"
@@ -108,16 +111,16 @@ export default function Search() {
                             setQuery(text);
                             setCategory("");
                         }}
-                        style={globalStyles.searchInput as TextStyle}
+                        style={pageStyles.searchInput as TextStyle}
                     />
                 </View>
 
-                <View style={globalStyles.resultsContainer as ViewStyle}>
+                <View style={pageStyles.resultsContainer as ViewStyle}>
                     <View style = {{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                         {query.length < 1 && !category ? (
-                            <Text style={globalStyles.placeholderText as TextStyle}>Start typing to search…</Text>
+                            <Text style={pageStyles.placeholderText as TextStyle}>Start typing to search…</Text>
                         ) : (
-                            <Text style={globalStyles.placeholderText as TextStyle}>
+                            <Text style={pageStyles.placeholderText as TextStyle}>
                                 {
                                     (category != null || query.length > 2) && listings.length > 0
                                         ? `Showing results for \"${query.length > 0 ? query : category}\"`

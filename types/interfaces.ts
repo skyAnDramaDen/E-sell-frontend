@@ -1,5 +1,6 @@
 import React from "react";
 import {Socket} from "socket.io-client";
+import {lightTheme} from "../src/theme/theme";
 
 export interface UserDTO {
     id: string;
@@ -214,4 +215,10 @@ export interface CreateConversationPayload {
     buyerId?: string;
     buyerName?: string;
     shopId?: string;
+}
+
+export interface ThemeContextType {
+    theme: typeof lightTheme;
+    isDark: boolean;
+    toggleTheme: () => void;
 }

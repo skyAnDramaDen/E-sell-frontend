@@ -1,7 +1,6 @@
 import { api } from "./authService";
 
 export async function get_listing(id: string) {
-    console.log("this is the listing service id:", id);
     const response = await api.post("/listing", {id: id});
     return response.data;
 }
@@ -44,7 +43,6 @@ export async function search_listings(id: string, category: string | null, searc
 }
 
 export async function create_listing(formData: FormData) {
-    console.log("the create listing service function is firing");
     const response = await api.post("/listing/add", formData);
     return response.data;
 }

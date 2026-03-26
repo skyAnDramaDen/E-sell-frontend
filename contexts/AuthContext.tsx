@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     newSocket.connect();
                     setSocket(newSocket);
                 } catch (error) {
-                    console.error("❌ Socket creation exception:", error);
+                    console.error("Socket creation exception:", error);
                 }
             } else {
                 return;

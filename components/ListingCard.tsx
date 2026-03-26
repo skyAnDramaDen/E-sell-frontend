@@ -1,6 +1,5 @@
 import {useState, useEffect} from "react";
-import {Text, View, TouchableOpacity, FlatList, Image, Pressable, Modal} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
+import {Text, View, Image, Pressable, Modal} from "react-native";
 import {useLocalSearchParams, useRouter} from "expo-router";
 
 import {
@@ -10,12 +9,16 @@ import {
 import {delete_listing} from "../services/listingsService";
 import TextTicker from 'react-native-text-ticker';
 
+import { useTheme } from "../hooks/useTheme";
+import { styles as globalStyles } from "../src/styles/styles";
 
 export default function ListingCard({listing, onDelete}: { listing: Listing, onDelete: (productId: string) => void }) {
     const router = useRouter();
     const {product, images} = listing;
     const [listingImages, setListingImages] = useState<string[] | null>(null);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const { theme }  = useTheme();
+    const pageStyles = globalStyles(theme);
 
     useEffect(() => {
         setListingImages(images);
@@ -24,11 +27,17 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
     return (
         <Pressable
             onPress={() => {
-                router.push(`/listing/${product.id}`);
+                router.replace({
+                    pathname: `/listing/${product.id}` as any,
+                    params: {
+                        from: "listings",
+                    }
+                })
             }}
+            style={{  backgroundColor: theme.colors.background  }}
         >
             <View
-                style={{padding: 12, backgroundColor: "#fff", borderRadius: 10}}
+                style={{padding: 12, borderRadius: 10, backgroundColor: theme.colors.surface}}
             >
                 <Pressable onPress={() => setShowModal(true)}
                            style={{
@@ -44,7 +53,7 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
                                alignItems: "center",
                            }}
                 >
-                    <Text style={{color: "#fff", fontSize: 15, fontWeight: "bold"}}>×</Text>
+                    <Text style={{color: theme.colors.text, fontSize: 15, fontWeight: "bold"}}>×</Text>
                 </Pressable>
                 {images && images.length > 0 ? (
                     <Image
@@ -108,8 +117,8 @@ export default function ListingCard({listing, onDelete}: { listing: Listing, onD
                 </Modal>
                 <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                     {/*<Text style={{fontSize: 18, fontWeight: "600", marginTop: 8, overflow: "scroll"}}>{product.name} </Text>*/}
-                    <TextTicker style={{ fontSize: 18, fontWeight: "600", marginTop: 8, width: 120 }} duration={6000} loop bounce={false} repeatSpacer={50} marqueeDelay={1000} > {product.name} </TextTicker>
-                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8}}>£{product.price} </Text>
+                    <TextTicker style={{ fontSize: 18, fontWeight: "600", marginTop: 8, width: 120, color: theme.colors.text }} duration={6000} loop bounce={false} repeatSpacer={50} marqueeDelay={1000} > {product.name} </TextTicker>
+                    <Text style={{fontSize: 18, fontWeight: "600", marginTop: 8, color: theme.colors.text}}>£{product.price} </Text>
                 </View>
             </View>
         </Pressable>

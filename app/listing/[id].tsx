@@ -3,7 +3,6 @@ import {
     View,
     Text,
     Image,
-    StyleSheet,
     TouchableOpacity,
     ScrollView,
     ViewStyle,
@@ -12,10 +11,9 @@ import {
 import {SafeAreaView} from "react-native-safe-area-context"
 import { LinearGradient } from "expo-linear-gradient";
 import {useLocalSearchParams, useRouter} from "expo-router";
-import { theme } from "../../src/theme/theme";
+import { useTheme } from "../../hooks/useTheme";
 import { Ionicons } from '@expo/vector-icons';
 import { styles as globalStyles } from '../../src/styles/styles';
-
 
 import { get_listing } from "../../services/listingsService";
 
@@ -36,8 +34,16 @@ export default function Listing() {
     const { id } = useLocalSearchParams();
     const listing_id = Array.isArray(id) ? id[0] : id;
 
+    const { theme, toggleTheme, isDark } = useTheme();
+    const pageStyles = globalStyles(theme);
+
+    const {
+        from
+    } = useLocalSearchParams<{
+        from: string;
+    }>();
+
     useEffect(() => {
-        console.log(product);
         async function load() {
             const fetched_product = await get_listing(listing_id);
 
@@ -71,14 +77,20 @@ export default function Listing() {
                       edges={["top", "left", "right"]}
         >
             <ScrollView
-                contentContainerStyle={localStyles.scrollContainer}
+                contentContainerStyle={[pageStyles.profileScrollContainer, { backgroundColor: theme.colors.background }]}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={globalStyles.listingTopSection as ViewStyle}>
+                <View style={pageStyles.listingTopSection as ViewStyle}>
                     <MultiActionButton
                         name="Back"
                         icon="arrow-back"
-                        onPress={() => router.replace("/listing")}
+                        onPress={() => {
+                            if (from === "listings" || from === "sell-page") {
+                                router.replace("/listing");
+                            } else if (from === "search-page") {
+                                router.replace("/search");
+                            }
+                        }}
                     />
                 </View>
 
@@ -87,56 +99,56 @@ export default function Listing() {
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
-                        style={localStyles.imageCarousel}
+                        style={pageStyles.imageCarousel}
                     >
                         {imageURLs && imageURLs.map((url, index) => (
-                            <Image key={index} source={{ uri: url }} style={localStyles.image} />
+                            <Image key={index} source={{ uri: url }} style={pageStyles.image} />
                         ))}
                     </ScrollView>
                 ) : (
-                    <View style={localStyles.imagePlaceholder}>
+                    <View style={pageStyles.imagePlaceholder}>
                         <Ionicons name="image-outline" size={48} color={theme.colors.textLight} />
-                        <Text style={localStyles.placeholderText}>No images</Text>
+                        <Text style={pageStyles.listingPlaceholderText}>No images</Text>
                     </View>
                 )}
 
-                <View style={localStyles.infoCard}>
-                    <View style={localStyles.headerRow}>
-                        <Text style={localStyles.productName}>{product.name}</Text>
-                        <Text style={localStyles.productPrice}>£{product.price}</Text>
+                <View style={pageStyles.infoCard}>
+                    <View style={pageStyles.headerRow}>
+                        <Text style={pageStyles.productName}>{product.name}</Text>
+                        <Text style={pageStyles.productPrice}>£{product.price}</Text>
                     </View>
 
-                    <View style={localStyles.metaContainer}>
-                        <View style={localStyles.metaItem}>
+                    <View style={pageStyles.metaContainer}>
+                        <View style={pageStyles.metaItem}>
                             <Ionicons name="pricetag-outline" size={16} color={theme.colors.textLight} />
-                            <Text style={localStyles.metaText}>
+                            <Text style={pageStyles.metaText}>
                                 {product.topCategory} / {product.subCategory} / {product.lowestCategory}
                             </Text>
                         </View>
-                        <View style={localStyles.metaItem}>
+                        <View style={pageStyles.metaItem}>
                             <Ionicons name="checkmark-circle-outline" size={16} color={theme.colors.textLight} />
-                            <Text style={localStyles.metaText}>
+                            <Text style={pageStyles.metaText}>
                                 Condition: {product.condition === 'good' ? 'Good' : product.condition === "like_new" ? "Used like new" : product.condition === "new" ? "New" : "Good"}
                             </Text>
                         </View>
                     </View>
                 </View>
 
-                <View style={globalStyles.section as ViewStyle}>
-                    <Text style={globalStyles.sectionTitle as TextStyle}>Description</Text>
-                    <Text style={localStyles.description}>{product.description}</Text>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Description</Text>
+                    <Text style={pageStyles.description}>{product.description}</Text>
                 </View>
 
                 {
                     user && product && user.id != product.sellerId && (
                         <View>
-                            <View style={globalStyles.section as ViewStyle}>
-                                <Text style={globalStyles.sectionTitle as TextStyle}>Seller</Text>
-                                <View style={localStyles.sellerRow}>
+                            <View style={pageStyles.section as ViewStyle}>
+                                <Text style={pageStyles.sectionTitle as TextStyle}>Seller</Text>
+                                <View style={pageStyles.sellerRow}>
                                     <Ionicons name="person-circle-outline" size={48} color={theme.colors.primary} />
-                                    <View style={localStyles.sellerInfo}>
-                                        <Text style={localStyles.sellerName}>{product.sellerName}</Text>
-                                        <Text style={localStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
+                                    <View style={pageStyles.sellerInfo}>
+                                        <Text style={pageStyles.sellerName}>{product.sellerName}</Text>
+                                        <Text style={pageStyles.sellerJoined}>{product.sellerPhoneNumber}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -156,16 +168,16 @@ export default function Listing() {
                                     }
                                 }}
                                 activeOpacity={0.8}
-                                style={localStyles.contactButtonWrapper}
+                                style={pageStyles.contactButtonWrapper}
                             >
                                 <LinearGradient
                                     colors={[theme.colors.primary, theme.colors.secondary]}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 0 }}
-                                    style={localStyles.contactButton}
+                                    style={pageStyles.contactButton}
                                 >
                                     <Ionicons name="chatbubble-outline" size={20} color="#fff" style={{ marginRight: 8 }} />
-                                    <Text style={localStyles.contactButtonText} onPress={() => {
+                                    <Text style={pageStyles.contactButtonText} onPress={() => {
 
                                     }} >Message Seller</Text>
                                 </LinearGradient>
@@ -179,139 +191,3 @@ export default function Listing() {
         </SafeAreaView>
     );
 }
-const localStyles = StyleSheet.create({
-    scrollContainer: {
-        padding: theme.spacing.sm,
-        paddingBottom: theme.spacing.xl,
-    },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        paddingVertical: theme.spacing.sm,
-        paddingHorizontal: theme.spacing.md,
-        marginBottom: theme.spacing.lg,
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        ...theme.shadows.sm,
-    },
-    backButtonText: {
-        marginLeft: theme.spacing.xs,
-        fontSize: 16,
-        color: theme.colors.text,
-        fontWeight: '500',
-    },
-    imageCarousel: {
-        marginBottom: theme.spacing.sm,
-        borderRadius: theme.borderRadius.lg,
-        overflow: 'hidden',
-        ...theme.shadows.md,
-    },
-    image: {
-        width: "100%",
-        height: 250,
-        resizeMode: 'cover',
-        borderRadius: theme.borderRadius.lg,
-        marginRight: theme.spacing.sm,
-    },
-    imagePlaceholder: {
-        width: '100%',
-        height: 200,
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: theme.spacing.sm,
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-        borderStyle: 'dashed',
-        ...theme.shadows.sm,
-    },
-    placeholderText: {
-        marginTop: theme.spacing.sm,
-        fontSize: 16,
-        color: theme.colors.textLight,
-    },
-    infoCard: {
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
-        padding: theme.spacing.lg,
-        marginBottom: theme.spacing.sm,
-        ...theme.shadows.md,
-    },
-    headerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing.md,
-    },
-    productName: {
-        fontSize: 22,
-        fontWeight: '700',
-        color: theme.colors.text,
-        flex: 1,
-        marginRight: theme.spacing.md,
-    },
-    productPrice: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: theme.colors.primary,
-    },
-    metaContainer: {
-        marginTop: theme.spacing.sm,
-    },
-    metaItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: theme.spacing.xs,
-    },
-    metaText: {
-        marginLeft: theme.spacing.sm,
-        fontSize: 14,
-        color: theme.colors.textLight,
-    },
-    description: {
-        fontSize: 16,
-        lineHeight: 24,
-        color: theme.colors.text,
-        marginTop: theme.spacing.xs,
-    },
-    sellerRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: theme.spacing.sm,
-    },
-    sellerInfo: {
-        marginLeft: theme.spacing.md,
-    },
-    sellerName: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: theme.colors.text,
-    },
-    sellerJoined: {
-        fontSize: 14,
-        color: theme.colors.textLight,
-        marginTop: 2,
-    },
-    contactButtonWrapper: {
-        marginTop: theme.spacing.sm,
-        borderRadius: theme.borderRadius.lg,
-        overflow: 'hidden',
-        ...theme.shadows.md,
-    },
-    contactButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: theme.spacing.lg,
-        paddingHorizontal: theme.spacing.xl,
-    },
-    contactButtonText: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#fff',
-    },
-});

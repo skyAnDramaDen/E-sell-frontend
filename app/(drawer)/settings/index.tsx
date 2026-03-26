@@ -6,18 +6,20 @@ import {
     TouchableOpacity,
     Switch,
     SafeAreaView,
-    StyleSheet,
+    ViewStyle, TextStyle,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '../../../src/theme/theme';
 import { styles as globalStyles } from '../../../src/styles/styles';
 import { SettingItemProps, SettingToggleProps } from "../../../types/interfaces";
 
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import {useNavigation, useLocalSearchParams, useRouter} from "expo-router";
+import {useNavigation, useRouter} from "expo-router";
 import MultiActionButton from "../../../components/MultiActionButton";
 type SettingsScreenNavigationProp = DrawerNavigationProp<any>;
+import { useTheme } from "../../../hooks/useTheme";
+
+import {ImageStyle} from "expo-image";
 
 type Props = {
     navigation: SettingsScreenNavigationProp;
@@ -29,33 +31,41 @@ const SettingItem = ({
                          onPress,
                          showChevron = true,
                          rightElement,
-                     }: SettingItemProps) => (
-    <TouchableOpacity style={localStyles.settingItem} onPress={onPress} activeOpacity={0.7}>
-        <View style={localStyles.settingItemLeft}>
-            <Ionicons name={icon} size={24} color={theme.colors.primary} style={localStyles.settingIcon} />
-            <Text style={localStyles.settingLabel}>{label}</Text>
-        </View>
-        {rightElement ? rightElement : showChevron && (
-            <Ionicons name="chevron-forward" size={20} color={theme.colors.textLight} />
-        )}
-    </TouchableOpacity>
-);
+                     }: SettingItemProps) => {
+    const { theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
-const SettingToggle = ({ icon, label, value, onValueChange }: SettingToggleProps) => (
-    <View style={localStyles.settingItem}>
-        <View style={localStyles.settingItemLeft}>
-            <Ionicons name={icon} size={24} color={theme.colors.primary} style={localStyles.settingIcon} />
-            <Text style={localStyles.settingLabel}>{label}</Text>
-        </View>
-        <Switch
-            trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
-            thumbColor={value ? '#fff' : '#f4f3f4'}
-            onValueChange={onValueChange}
-            value={value}
-        />
-    </View>
-);
+    return (
+        <TouchableOpacity style={pageStyles.settingItem as ViewStyle} onPress={onPress} activeOpacity={0.7}>
+            <View style={pageStyles.settingItemLeft as ViewStyle}>
+                <Ionicons name={icon} size={24} color={theme.colors.primary} style={pageStyles.settingIcon as ImageStyle} />
+                <Text style={pageStyles.settingLabel as TextStyle}>{label}</Text>
+            </View>
+            {rightElement ? rightElement : showChevron && (
+                <Ionicons name="chevron-forward" size={20} color={theme.colors.textLight} />
+            )}
+        </TouchableOpacity>
+    )
+};
 
+const SettingToggle = ({ icon, label, value, onValueChange }: SettingToggleProps) => {
+    const { theme } = useTheme();
+    const pageStyles = globalStyles(theme);
+    return (
+        <View style={pageStyles.settingItem as ViewStyle}>
+            <View style={pageStyles.settingItemLeft as ViewStyle}>
+                <Ionicons name={icon} size={24} color={theme.colors.primary} style={pageStyles.settingIcon as ImageStyle} />
+                <Text style={pageStyles.settingLabel as TextStyle}>{label}</Text>
+            </View>
+            <Switch
+                trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
+                thumbColor={value ? '#fff' : '#f4f3f4'}
+                onValueChange={onValueChange}
+                value={value}
+            />
+        </View>
+    )
+};
 
 const Index = () => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -64,14 +74,17 @@ const Index = () => {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
     const router = useRouter();
 
+    const { toggleTheme, theme } = useTheme();
+    const pageStyles = globalStyles(theme);
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <ScrollView
-                contentContainerStyle={globalStyles.scrollContainer}
+                contentContainerStyle={pageStyles.scrollContainer as ViewStyle}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={globalStyles.header}>
-                    <TouchableOpacity onPress={() => navigation.openDrawer()} style={globalStyles.menuButton}>
+                <View style={pageStyles.header as ViewStyle}>
+                    <TouchableOpacity onPress={() => navigation.openDrawer()} style={pageStyles.menuButton as ViewStyle}>
                         <Ionicons name="menu" size={28} color={theme.colors.text} />
                     </TouchableOpacity>
 
@@ -79,9 +92,9 @@ const Index = () => {
                         colors={[theme.colors.primary, theme.colors.secondary]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
-                        style={globalStyles.titleGradient}
+                        style={pageStyles.titleGradient as ViewStyle}
                     >
-                        <Text style={globalStyles.title}>Settings</Text>
+                        <Text style={pageStyles.title as TextStyle}>Settings</Text>
                     </LinearGradient>
 
                     <MultiActionButton
@@ -90,16 +103,16 @@ const Index = () => {
                     />
                 </View>
 
-                <View style={globalStyles.section}>
-                    <Text style={globalStyles.sectionTitle}>Account</Text>
-                    <View style={localStyles.card}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Account</Text>
+                    <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
                             icon="person-outline"
                             label="Profile Information"
                             onPress={() => router.push('/profile')}
                             showChevron={false}
                         />
-                        <View style={localStyles.divider} />
+                        <View style={pageStyles.divider as ViewStyle} />
                         <SettingItem
                             icon="lock-closed-outline"
                             label="Change Password"
@@ -109,24 +122,26 @@ const Index = () => {
                     </View>
                 </View>
 
-
-                <View style={globalStyles.section}>
-                    <Text style={globalStyles.sectionTitle}>Preferences</Text>
-                    <View style={localStyles.card}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Preferences</Text>
+                    <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingToggle
                             icon="notifications-outline"
                             label="Push Notifications"
                             value={notificationsEnabled}
                             onValueChange={setNotificationsEnabled}
                         />
-                        <View style={localStyles.divider} />
+                        <View style={pageStyles.divider as ViewStyle} />
                         <SettingToggle
                             icon="moon-outline"
                             label="Dark Mode"
                             value={darkModeEnabled}
-                            onValueChange={setDarkModeEnabled}
+                            onValueChange={() => {
+                                setDarkModeEnabled(!darkModeEnabled);
+                                toggleTheme();
+                            }}
                         />
-                        <View style={localStyles.divider} />
+                        <View style={pageStyles.divider as ViewStyle} />
                         <SettingToggle
                             icon="location-outline"
                             label="Location Services"
@@ -136,41 +151,41 @@ const Index = () => {
                     </View>
                 </View>
 
-                <View style={globalStyles.section}>
-                    <Text style={globalStyles.sectionTitle}>Privacy & Security</Text>
-                    <View style={localStyles.card}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <Text style={pageStyles.sectionTitle as TextStyle}>Privacy & Security</Text>
+                    <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
                             icon="shield-checkmark-outline"
                             label="Privacy Policy"
                             onPress={() => navigation.navigate('PrivacyPolicy')}
                             showChevron={false}
                         />
-                        <View style={localStyles.divider} />
+                        <View style={pageStyles.divider as ViewStyle} />
                         <SettingItem
                             icon="document-text-outline"
                             label="Terms of Service"
                             onPress={() => navigation.navigate('TermsOfService')}
                             showChevron={false}
                         />
-                        <View style={localStyles.divider} />
+                        <View style={pageStyles.divider as ViewStyle} />
                         <SettingItem
                             icon="log-out-outline"
                             label="Log Out"
                             onPress={() => {}}
                             showChevron={false}
-                            rightElement={<Text style={localStyles.logoutText}>Logout</Text>}
+                            rightElement={<Text style={pageStyles.logoutText as TextStyle}>Logout</Text>}
                         />
                     </View>
                 </View>
 
-                <View style={globalStyles.section}>
-                    <View style={localStyles.card}>
+                <View style={pageStyles.section as ViewStyle}>
+                    <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
                             icon="information-circle-outline"
                             label="App Version"
                             onPress={() => {}}
                             showChevron={false}
-                            rightElement={<Text style={localStyles.versionText}>1.0.0</Text>}
+                            rightElement={<Text style={pageStyles.versionText as TextStyle}>1.0.0</Text>}
                         />
                     </View>
                 </View>
@@ -179,45 +194,6 @@ const Index = () => {
     );
 };
 
-const localStyles = StyleSheet.create({
-    card: {
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.borderRadius.lg,
-        paddingHorizontal: theme.spacing.md,
-        ...theme.shadows.md,
-    },
-    settingItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: theme.spacing.md,
-        paddingHorizontal: theme.spacing.sm,
-    },
-    settingItemLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    settingIcon: {
-        marginRight: theme.spacing.md,
-    },
-    settingLabel: {
-        fontSize: 16,
-        color: theme.colors.text,
-    },
-    divider: {
-        height: 1,
-        backgroundColor: theme.colors.border,
-        marginLeft: 52,
-    },
-    logoutText: {
-        fontSize: 16,
-        color: theme.colors.error,
-        fontWeight: '500',
-    },
-    versionText: {
-        fontSize: 16,
-        color: theme.colors.textLight,
-    },
-});
+
 
 export default Index;

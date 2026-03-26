@@ -10,14 +10,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { useAuth } from '../../../../hooks/useAuth';
-import { theme } from '../../../../src/theme/theme';
+import { useTheme } from '../../../../hooks/useTheme';
 import { styles as globalStyles } from '../../../../src/styles/styles';
 import {Conversation, Message, User, UserDTO} from "../../../../types/interfaces";
 
 import {get_all_conversations} from "../../../../services/conversationService";
 import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
 
-import { styles } from "../../../../src/styles/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 
@@ -72,6 +71,9 @@ const Chats = () => {
 
     const fetchedUserId = useRef<string | null>(null);
     const isMounted = useRef(true);
+
+    const { isDark, toggleTheme, theme } = useTheme();
+    const pageStyles = globalStyles(theme);
 
     const getDisplayName = (conversation: Conversation, currentUserId?: string) => {
         const others = getOtherParticipants(conversation, currentUserId);
@@ -176,7 +178,7 @@ const Chats = () => {
 
         return (
             <TouchableOpacity
-                style={styles.conversationItem as ViewStyle}
+                style={pageStyles.conversationItem as ViewStyle}
                 onPress={() => {
                     // router.push(`/chat/${item.id}`);
                     router.push({
@@ -192,41 +194,41 @@ const Chats = () => {
                 }}
                 activeOpacity={0.7}
             >
-                <View style={styles.avatarContainer as ViewStyle}>
-                    {/*<View style={styles.avatarPlaceholder}>*/}
-                    {/*    <Text style={styles.avatarText}>*/}
+                <View style={pageStyles.avatarContainer as ViewStyle}>
+                    {/*<View style={pageStyles.avatarPlaceholder}>*/}
+                    {/*    <Text style={pageStyles.avatarText}>*/}
                     {/*        {displayName.charAt(0).toUpperCase()}*/}
                     {/*    </Text>*/}
                     {/*</View>*/}
                     {unreadCount > 0 && (
-                        <View style={styles.unreadBadge as ViewStyle}>
-                            <Text style={styles.unreadText as TextStyle}>
+                        <View style={pageStyles.unreadBadge as ViewStyle}>
+                            <Text style={pageStyles.unreadText as TextStyle}>
                                 {unreadCount > 9 ? '9+' : unreadCount}
                             </Text>
                         </View>
                     )}
                 </View>
 
-                <View style={styles.conversationInfo as ViewStyle}>
-                    <View style={styles.topRow as ViewStyle}>
-                        <Text style={styles.name as TextStyle} numberOfLines={1}>
+                <View style={pageStyles.conversationInfo as ViewStyle}>
+                    <View style={pageStyles.topRow as ViewStyle}>
+                        <Text style={pageStyles.name as TextStyle} numberOfLines={1}>
                             {displayName}
                         </Text>
-                        <Text style={styles.timestamp as TextStyle}>
+                        <Text style={pageStyles.timestamp as TextStyle}>
                             {formatTime(lastMessageTime)}
                         </Text>
                     </View>
-                    <View style={styles.bottomRow as ViewStyle}>
+                    <View style={pageStyles.bottomRow as ViewStyle}>
                         <Text
                             style={[
-                                styles.lastMessage as TextStyle,
-                                (unreadCount > 0) && styles.unreadLastMessage as TextStyle,
+                                pageStyles.lastMessage as TextStyle,
+                                (unreadCount > 0) && pageStyles.unreadLastMessage as TextStyle,
                             ]}
                             numberOfLines={1}
                         >
                             {lastMessagePreview}
                         </Text>
-                        {unreadCount > 0 && <View style={styles.unreadDot as ViewStyle} />}
+                        {unreadCount > 0 && <View style={pageStyles.unreadDot as ViewStyle} />}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -235,7 +237,7 @@ const Chats = () => {
 
     if (loading) {
         return (
-            <SafeAreaView style={styles.centerContainer as ViewStyle}>
+            <SafeAreaView style={pageStyles.centerContainer as ViewStyle}>
                 <ActivityIndicator size="large" color={theme.colors.primary} />
             </SafeAreaView>
         );
@@ -243,10 +245,10 @@ const Chats = () => {
 
     if (error) {
         return (
-            <SafeAreaView style={styles.centerContainer as ViewStyle}>
-                <Text style={styles.errorText as TextStyle}>{error}</Text>
+            <SafeAreaView style={pageStyles.centerContainer as ViewStyle}>
+                <Text style={pageStyles.errorText as TextStyle}>{error}</Text>
                 <TouchableOpacity
-                    style={globalStyles.backButton as ViewStyle}
+                    style={pageStyles.backButton as ViewStyle}
                     onPress={() => {
                         fetchedUserId.current = null;
                         setError(null);
@@ -254,33 +256,33 @@ const Chats = () => {
                     }}
                 >
                     <Icon name="refresh" size={20} color={theme.colors.text} />
-                    <Text style={globalStyles.backButtonText as TextStyle}>Retry</Text>
+                    <Text style={pageStyles.backButtonText as TextStyle}>Retry</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         );
     }
 
     return (
-        <SafeAreaView style={styles.container as ViewStyle}>
-            <View style={styles.header as ViewStyle}>
-                <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton as ViewStyle}>
+        <SafeAreaView style={pageStyles.container as ViewStyle}>
+            <View style={pageStyles.header as ViewStyle}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()} style={pageStyles.menuButton as ViewStyle}>
                     <Ionicons name="menu" size={25} color={theme.colors.text} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle as TextStyle}>Chats</Text>
+                <Text style={pageStyles.headerTitle as TextStyle}>Chats</Text>
             </View>
 
             <FlatList
                 data={conversations}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
-                contentContainerStyle={styles.listContent as ViewStyle}
+                contentContainerStyle={pageStyles.listContent as ViewStyle}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={
-                    <View style={styles.emptyContainer as ViewStyle}>
+                    <View style={pageStyles.emptyContainer as ViewStyle}>
                         <Icon name="chat" size={60} color={theme.colors.textLight} />
-                        <Text style={styles.emptyText as TextStyle}>No conversations yet</Text>
-                        <TouchableOpacity style={styles.startChatButton as ViewStyle}>
-                            <Text style={styles.startChatButtonText as TextStyle}>Start a new chat</Text>
+                        <Text style={pageStyles.emptyText as TextStyle}>No conversations yet</Text>
+                        <TouchableOpacity style={pageStyles.startChatButton as ViewStyle}>
+                            <Text style={pageStyles.startChatButtonText as TextStyle}>Start a new chat</Text>
                         </TouchableOpacity>
                     </View>
                 }
