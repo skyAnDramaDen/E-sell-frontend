@@ -4,7 +4,6 @@ import {
     View,
     Text,
     Image,
-    StyleSheet,
     TouchableOpacity,
     ScrollView,
     TextInput,
@@ -18,23 +17,23 @@ import {useRouter} from "expo-router";
 import {useAuth} from "../../hooks/useAuth";
 import {takePhoto, pickOneImage} from "../../utils/imagePicker";
 
-import { styles as globalStyles } from "../../src/styles/styles";
+import {styles as globalStyles} from "../../src/styles/styles";
 import {edit_user, get_user} from "../../services/userService";
 import {Ionicons} from "@expo/vector-icons";
 
 import {showMessage} from "react-native-flash-message";
 import {useFocusEffect} from "expo-router";
-import {UserDTO, GetUserResponseBody} from "../../types/interfaces";
+import {UserDTO} from "../../types/interfaces";
 import {useTheme} from "../../hooks/useTheme";
 
 export default function Profile() {
-    const {login, loading, error, user, reload_user} = useAuth();
+    const {user} = useAuth();
     const [editMode, setEditMode] = useState(false);
     const router = useRouter();
     const [image, setImage] = useState<string>();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [shouldOpenLibrary, setShouldOpenLibrary] = useState(false);
-    const { isDark, toggleTheme, theme } = useTheme();
+    const {theme} = useTheme();
 
     const pageStyles = globalStyles(theme);
 
@@ -53,7 +52,7 @@ export default function Profile() {
     const handleSubmit = async () => {
         const formData = new FormData();
         if (userData.phoneNumber) {
-            if (userData.phoneNumber .length < 11) {
+            if (userData.phoneNumber.length < 11) {
                 showMessage({message: "Phone number is less than eleven digits!", type: "danger",});
                 return;
             }
@@ -166,14 +165,14 @@ export default function Profile() {
     );
 
     return (
-        <LinearGradient
-            colors={['#f8f9fa', '#e9ecef']}
-            style={{ flex: 1 }}
-        >
-            <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
-            <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+        <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+            <LinearGradient
+                colors={[theme.colors.background, theme.colors.background]}
+                style={{backgroundColor: theme.colors.background}}
+            >
+                <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent/>
                 <ScrollView
-                    contentContainerStyle={[pageStyles.scrollContainer as ViewStyle]}
+                    contentContainerStyle={[pageStyles.scrollContainer as ViewStyle, {backgroundColor: theme.colors.background}]}
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={pageStyles.centered}>
@@ -183,7 +182,7 @@ export default function Profile() {
                                     onPress={() => router.replace('/(tabs)' as any)}
                                     style={pageStyles.iconButton as ViewStyle}
                                 >
-                                    <Ionicons name="home-outline" size={24} color={theme.colors.text} />
+                                    <Ionicons name="home-outline" size={24} color={theme.colors.text}/>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
@@ -193,11 +192,12 @@ export default function Profile() {
                                 >
                                     <LinearGradient
                                         colors={['transparent', 'transparent']}
-                                        start={{ x: 0, y: 0 }}
-                                        end={{ x: 1, y: 0 }}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 1, y: 0}}
                                         style={pageStyles.profileGradientButton}
                                     >
-                                        <Text style={[pageStyles.profileEditButtonText, editMode && { color: theme.colors.text }]}>
+                                        <Text
+                                            style={[pageStyles.profileEditButtonText, editMode && {color: theme.colors.text}]}>
                                             {editMode ? 'Cancel' : 'Edit'}
                                         </Text>
                                     </LinearGradient>
@@ -210,7 +210,7 @@ export default function Profile() {
                                         onPress={() => setShowModal(true)}
                                         style={pageStyles.cameraButtonOverlay}
                                     >
-                                        <Ionicons name="camera" size={24} color="#fff" />
+                                        <Ionicons name="camera" size={24} color={theme.colors.text}/>
                                     </Pressable>
                                 )}
                                 <Image
@@ -281,19 +281,22 @@ export default function Profile() {
                             {!editMode ? (
                                 <View style={pageStyles.profileInfoContainer as ViewStyle}>
                                     <View style={pageStyles.profileInfoRow}>
-                                        <Ionicons name="person-outline" size={20} color={theme.colors.primary} style={pageStyles.infoIcon} />
+                                        <Ionicons name="person-outline" size={20} color={theme.colors.primary}
+                                                  style={pageStyles.infoIcon}/>
                                         <Text style={pageStyles.profileLabel}>Username</Text>
                                         <Text style={pageStyles.profileValue}>{userData.username}</Text>
                                     </View>
 
                                     <View style={pageStyles.profileInfoRow}>
-                                        <Ionicons name="call-outline" size={20} color={theme.colors.primary} style={pageStyles.infoIcon} />
+                                        <Ionicons name="call-outline" size={20} color={theme.colors.primary}
+                                                  style={pageStyles.infoIcon}/>
                                         <Text style={pageStyles.profileLabel}>Phone</Text>
                                         <Text style={pageStyles.profileValue}>{userData.phoneNumber}</Text>
                                     </View>
 
                                     <View style={pageStyles.profileInfoRow}>
-                                        <Ionicons name="mail-outline" size={20} color={theme.colors.primary} style={pageStyles.infoIcon} />
+                                        <Ionicons name="mail-outline" size={20} color={theme.colors.primary}
+                                                  style={pageStyles.infoIcon}/>
                                         <Text style={pageStyles.profileLabel}>Email</Text>
                                         <Text style={pageStyles.profileValue}>{userData.email}</Text>
                                     </View>
@@ -339,7 +342,7 @@ export default function Profile() {
                                         </View>
                                     </View>
 
-                                    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                                    <Animated.View style={{transform: [{scale: scaleAnim}]}}>
                                         <TouchableOpacity
                                             onPress={handleSubmit}
                                             onPressIn={onPressIn}
@@ -348,12 +351,13 @@ export default function Profile() {
                                         >
                                             <LinearGradient
                                                 colors={[theme.colors.primary, theme.colors.secondary]}
-                                                start={{ x: 0, y: 0 }}
-                                                end={{ x: 1, y: 0 }}
+                                                start={{x: 0, y: 0}}
+                                                end={{x: 1, y: 0}}
                                                 style={pageStyles.profileSaveButton}
                                             >
                                                 <Text style={pageStyles.profileSaveButtonText}>Save Changes</Text>
-                                                <Ionicons name="checkmark" size={20} color="#fff" style={{ marginLeft: 8 }} />
+                                                <Ionicons name="checkmark" size={20} color="#fff"
+                                                          style={{marginLeft: 8}}/>
                                             </LinearGradient>
                                         </TouchableOpacity>
                                     </Animated.View>
@@ -362,7 +366,7 @@ export default function Profile() {
                         </View>
                     </View>
                 </ScrollView>
-            </SafeAreaView>
-        </LinearGradient>
+            </LinearGradient>
+        </SafeAreaView>
     );
 }

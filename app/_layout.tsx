@@ -8,6 +8,7 @@ import FlashMessage from "react-native-flash-message";
 
 import "./globals.css";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import { ChatProvider } from "../contexts/ChatContext";
 
 function RootLayoutContent() {
     const insets = useSafeAreaInsets();
@@ -47,7 +48,9 @@ export default function RootLayout() {
     return (
         <ThemeProvider>
             <AuthProvider>
-                <RootLayoutContent />
+                <ChatProvider>
+                    <RootLayoutContent />
+                </ChatProvider>
             </AuthProvider>
         </ThemeProvider>
     );

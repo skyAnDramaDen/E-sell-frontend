@@ -1,50 +1,27 @@
-# Welcome to your Expo app 👋
+# E-Sell Frontend (Mobile/Web)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The client-side application for the E-Sell marketplace, built with Expo and React Native. This app features a robust real-time communication system for buyers and sellers.
 
-## Get started
+## 🚀 Key Features
+- **Real-time Chat:** Integrated with Socket.io for instant messaging between users.
+- **Marketplace Logic:** Browse listings, manage profiles, and upload images.
+- **Cross-Platform:** Developed using Expo for seamless performance on iOS, Android, and Web.
+- **Type Safety:** Built with TypeScript to ensure reliable data handling from the API.
 
-1. Install dependencies
+## 🛠 Tech Stack
+- **Framework:** Expo (React Native)
+- **State & Logic:** React Hooks, Context API
+- **Real-time:** Socket.io-client
+- **Navigation:** Expo Router (File-based)
+- **Styling:** NativeWind / Tailwind CSS
 
+## 📡 Real-time Implementation
+The app utilizes a Socket.io-client to establish a persistent connection with the Express server.
+- Handles `join_room` and `send_message` events.
+- Optimistic UI updates for a lag-free user experience.
+
+## ⚙️ Setup
+1. Clone the repo
+2. Install dependencies:
    ```bash
    npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

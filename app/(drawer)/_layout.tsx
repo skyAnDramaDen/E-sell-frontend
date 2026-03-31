@@ -1,12 +1,17 @@
 import { Drawer } from "expo-router/drawer";
 import CustomDrawer from "../../components/CustomDrawer";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function DrawerLayout() {
+    const { theme } = useTheme();
     return (
     <Drawer
         drawerContent={(props) => <CustomDrawer {...props} />}
         screenOptions={{
             headerShown: false,
+            drawerStyle: {
+                backgroundColor: theme.colors.background,
+            },
         }}
     >
         <Drawer.Screen

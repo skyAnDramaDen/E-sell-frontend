@@ -37,6 +37,7 @@ export default function Search() {
     const { user } = useAuth();
     const { isDark, toggleTheme, theme } = useTheme();
     const pageStyles = globalStyles(theme);
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
@@ -65,6 +66,8 @@ export default function Search() {
             return;
         }
 
+        setLoading(true);
+
         const fetchData = async () => {
             try {
                 let found_listings;
@@ -72,8 +75,10 @@ export default function Search() {
                     found_listings = await search_listings(user.id, category || null, query || null);
 
                     setListings(found_listings);
+                    setLoading(false);
                 }
             } catch (error) {
+                setLoading(false);
                 setListings([]);
                 showMessage({message: "Error fetching listings", type: "danger"});
             }
@@ -122,20 +127,24 @@ export default function Search() {
                         ) : (
                             <Text style={pageStyles.placeholderText as TextStyle}>
                                 {
-                                    (category != null || query.length > 2) && listings.length > 0
-                                        ? `Showing results for \"${query.length > 0 ? query : category}\"`
-                                        : (category != null || query.length > 2) && listings.length < 1
+                                    (category === null && query.length < 3) ? "Start typing to search" :
+                                        (category != null || query.length > 2) && listings.length < 1 && loading ? "Loading..." :
+                                            (category != null || query.length > 2) && listings.length > 0 ? `Showing results for \"${query.length > 0 ? query : category}\"` :
+                                            (category != null || query.length > 2) && listings.length < 1 && !loading
                                             ? "There are no results for that search"
-                                            : "Start typing to search"
+                                            : ""
                                 }
                             </Text>
                         )}
+
                         <ActionButton name={"Clear"} onPress={() => {
+                            setLoading(false);
                             setQuery("");
-                            setListings([]);
                             setCategory(null);
+                            setListings([]);
                             router.setParams({ category: null });
-                        }}/>
+                        }}
+                        />
                     </View>
 
                     {listings.length > 0 && (

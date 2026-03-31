@@ -20,6 +20,8 @@ import { useRouter, useNavigation, useLocalSearchParams } from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import {DrawerNavigationProp} from "@react-navigation/drawer";
 
+import { useChat } from "../../../../hooks/useChat";
+
 const getOtherParticipants = (conversation: Conversation, currentUserId?: string) => {
     if (!currentUserId) return [];
     return conversation.participant.filter(p => p.id !== currentUserId);
@@ -62,7 +64,7 @@ const formatTime = (timestamp: string | Date) => {
 };
 
 const Chats = () => {
-    const [conversations, setConversations] = useState<Conversation[]>([]);
+    // const [conversations, setConversations] = useState<Conversation[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { user, socket } = useAuth();
@@ -74,6 +76,8 @@ const Chats = () => {
 
     const { isDark, toggleTheme, theme } = useTheme();
     const pageStyles = globalStyles(theme);
+
+    const { setConversations, conversations } = useChat();
 
     const getDisplayName = (conversation: Conversation, currentUserId?: string) => {
         const others = getOtherParticipants(conversation, currentUserId);
@@ -157,13 +161,13 @@ const Chats = () => {
         });
     }, []);
 
-    useEffect(() => {
-        if (!socket) return;
-        socket.on('new_message', handleNewMessage);
-        return () => {
-            socket.off('new_message', handleNewMessage);
-        };
-    }, [socket, handleNewMessage]);
+    // useEffect(() => {
+    //     if (!socket) return;
+    //     socket.on('new_message', handleNewMessage);
+    //     return () => {
+    //         socket.off('new_message', handleNewMessage);
+    //     };
+    // }, [socket, handleNewMessage]);
 
     const renderItem = ({ item }: { item: Conversation }) => {
         const lastMsg = getLastMessage(item);

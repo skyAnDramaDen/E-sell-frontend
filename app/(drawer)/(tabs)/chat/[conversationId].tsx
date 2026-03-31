@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef, use} from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import {
@@ -21,10 +21,10 @@ import {
     get_conversation_by_participants_id,
     get_conversation_by_id
 } from "../../../../services/conversationService";
-import {Conversation, ConversationType, ConversationParticipants} from "../../../../types/interfaces";
+import {Conversation, ConversationType, ConversationParticipants, Message, ConversationParticipant} from "../../../../types/interfaces";
 import {send_message} from "../../../../services/messageService";
 import { add_participants } from "../../../../services/conversationParticipantService";
-import {Message} from "postcss";
+// import {Message} from "postcss";
 
 import {showMessage} from "react-native-flash-message";
 
@@ -53,6 +53,7 @@ const ChatScreen = () => {
     const flatListRef = useRef<FlatList>(null);
     const [conversation, setConversation] = useState<Conversation | null>(null);
     const [participants, setParticipants] = useState<ConversationParticipants | null>(null);
+    const [receiver, setReceiver] = useState<ConversationParticipant | null>(null)
     const router = useRouter();
     const { theme } = useTheme();
     const pageStyles = globalStyles(theme);
@@ -73,6 +74,16 @@ const ChatScreen = () => {
     }>();
 
     useEffect(() => {
+        if (participants != null && user != null) {
+            for (const x of participants) {
+                if (x.userId != user.id) {
+                    setReceiver(x);
+                }
+            }
+        }
+    }, [receiver, user]);
+
+    useEffect(() => {
         if (sentConversationId) {
             setConversationId(sentConversationId);
         }
@@ -89,14 +100,21 @@ const ChatScreen = () => {
                 if (response) {
                     setMessages(response.messages);
                     setConversationId(response.id);
+                    setParticipants(response.participant);
+                } else {
+
                 }
             } catch (error) {
-                showMessage({message: "Failed to fetch conversation", type: "danger"});
+                // showMessage({message: "Failed to fetch conversation", type: "danger"});
             }
         }
 
         fetch_conversation();
     }, [])
+
+    const formatReceiverName = (name: string) => {
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    };
 
     useEffect(() => {
         if (!socket) return;
@@ -185,9 +203,7 @@ const ChatScreen = () => {
 
                         message = await send_message(message_payload);
 
-
                         if (message) {
-                            setMessages(prev => [...prev, message]);
                             socket.emit("send_message", {
                                 conversationId: created_conversation.id,
                                 message: message,
@@ -260,9 +276,8 @@ const ChatScreen = () => {
                         <Icon name="arrow-back" size={24} color={theme.colors.text} />
                     </TouchableOpacity>
                     <View style={pageStyles.individualConversationInfo}>
-                        {/*<Avatar name={conversationName} />*/}
                         <Text style={pageStyles.conversationName} numberOfLines={1}>
-                            {"Chat"}
+                            {receiver ? formatReceiverName(receiver.name) : ""}
                         </Text>
                     </View>
                 </View>

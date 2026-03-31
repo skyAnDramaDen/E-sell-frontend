@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 export const styles = (theme) => StyleSheet.create({
     changePasswordHeader: {
@@ -212,7 +212,7 @@ export const styles = (theme) => StyleSheet.create({
     },
     iconButton: {
         padding: theme.spacing.sm,
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.surface,
         borderRadius: theme.borderRadius.md,
         ...theme.shadows.sm,
     },
@@ -292,6 +292,7 @@ export const styles = (theme) => StyleSheet.create({
         fontWeight: '700',
         color: '#fff',
         letterSpacing: 0.5,
+        padding: 5,
     },
     actionsRow: {
         flexDirection: 'row',
@@ -387,6 +388,16 @@ export const styles = (theme) => StyleSheet.create({
         ...theme.shadows.md,
         width: "100%",
     },
+
+    settingSection: {
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.lg,
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
+        ...theme.shadows.md,
+        width: "100%",
+    },
     section2: {
         backgroundColor: theme.colors.surface,
         borderRadius: theme.borderRadius.lg,
@@ -400,10 +411,10 @@ export const styles = (theme) => StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
-    gridItem: {
-        width: '48%',
-        marginBottom: 12,
-    },
+    // gridItem: {
+    //     width: ((Dimensions.get("window").width - theme.spacing.sm * 3) / 2),
+    //     marginBottom: 12,
+    // },
     listingTopSection: {
         display: 'flex',
         flexDirection: "row",
@@ -712,7 +723,7 @@ export const styles = (theme) => StyleSheet.create({
     settingCard: {
         backgroundColor: theme.colors.surface,
         borderRadius: theme.borderRadius.lg,
-        paddingHorizontal: theme.spacing.md,
+        paddingHorizontal: theme.spacing.sm,
         ...theme.shadows.md,
     },
     settingItem: {
@@ -753,7 +764,7 @@ export const styles = (theme) => StyleSheet.create({
     cameraButtonOverlay: {
         position: 'absolute',
         top: 8,
-        right: 8,
+        right: 105,
         zIndex: 10,
         backgroundColor: 'rgba(0,0,0,0.6)',
         width: 40,
@@ -805,16 +816,16 @@ export const styles = (theme) => StyleSheet.create({
         fontSize: 16,
     },
     profileCard: {
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.background,
         borderRadius: 28,
-        padding: 24,
+        // padding: 5,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.08,
         shadowRadius: 12,
         elevation: 5,
-        marginHorizontal: 5,
-        marginTop: 20,
+        // marginHorizontal: 5,
+        // marginTop: 20,
     },
     profileImageContainer: {
         alignItems: 'center',
@@ -846,13 +857,13 @@ export const styles = (theme) => StyleSheet.create({
     profileLabel: {
         width: 80,
         fontSize: 14,
-        color: '#6c757d',
+        color: theme.colors.text,
         fontWeight: '500',
     },
     profileValue: {
         flex: 1,
         fontSize: 16,
-        color: '#212529',
+        color: theme.colors.text,
         fontWeight: '400',
     },
     profileEditContainer: {
@@ -864,7 +875,7 @@ export const styles = (theme) => StyleSheet.create({
     inputLabel: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#495057',
+        color: theme.colors.text,
         marginBottom: 6,
     },
     profileInputWrapper: {
@@ -873,11 +884,11 @@ export const styles = (theme) => StyleSheet.create({
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 12,
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.background,
     },
     profileInput: {
         fontSize: 16,
-        color: '#212529',
+        color: theme.colors.text,
         padding: 0,
     },
     profileSaveButton: {
@@ -1151,6 +1162,7 @@ export const styles = (theme) => StyleSheet.create({
     drawerHeaderText: {
         fontSize: 20,
         fontWeight: "600",
+        color: theme.colors.text,
     },
     drawerItem: {
         marginVertical: 0,
@@ -1164,20 +1176,11 @@ export const styles = (theme) => StyleSheet.create({
     },
     drawerLabel: {
         fontSize: 16,
+        color: theme.colors.text,
     },
     drawerLogout: {
         color: "red",
     },
-
-
-
-
-
-
-
-
-
-
     registerPageText: {
         // ...theme.typography.body,
         color: theme.colors.text,

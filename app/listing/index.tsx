@@ -21,6 +21,8 @@ export default function Listings() {
     const {user} = useAuth();
     const { theme }  = useTheme();
 
+    const [loading, setLoading] = useState(false);
+
     const [listings, setListings] = useState<AllListings>([]);
 
     const CARD_GAP = theme.spacing.sm;
@@ -31,16 +33,19 @@ export default function Listings() {
     }
 
     useEffect(() => {
+        setLoading(true);
         async function load_list() {
             if (user) {
                 try {
                     const listings = await get_listings(user.id);
 
+                    setLoading(false);
                     if (listings.length === 0) {
                         setListings([]);
                     }
                     setListings(listings);
                 } catch (error) {
+                    setLoading(false);
                     setListings([]);
                 }
             }
@@ -63,7 +68,7 @@ export default function Listings() {
                     onPress={() => router.replace("/")}
                 />
                 {
-                    listings.length > 0 ? (
+                    listings.length > 0  ? (
                         <FlatList
                             data={listings}
                             keyExtractor={(item) => item.product.id}

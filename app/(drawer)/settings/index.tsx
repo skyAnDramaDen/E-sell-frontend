@@ -103,7 +103,7 @@ const Index = () => {
                     />
                 </View>
 
-                <View style={pageStyles.section as ViewStyle}>
+                <View style={pageStyles.settingSection as ViewStyle}>
                     <Text style={pageStyles.sectionTitle as TextStyle}>Account</Text>
                     <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
@@ -122,7 +122,7 @@ const Index = () => {
                     </View>
                 </View>
 
-                <View style={pageStyles.section as ViewStyle}>
+                <View style={pageStyles.settingSection as ViewStyle}>
                     <Text style={pageStyles.sectionTitle as TextStyle}>Preferences</Text>
                     <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingToggle
@@ -151,7 +151,7 @@ const Index = () => {
                     </View>
                 </View>
 
-                <View style={pageStyles.section as ViewStyle}>
+                <View style={pageStyles.settingSection as ViewStyle}>
                     <Text style={pageStyles.sectionTitle as TextStyle}>Privacy & Security</Text>
                     <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
@@ -178,7 +178,7 @@ const Index = () => {
                     </View>
                 </View>
 
-                <View style={pageStyles.section as ViewStyle}>
+                <View style={pageStyles.settingSection as ViewStyle}>
                     <View style={pageStyles.settingCard as ViewStyle}>
                         <SettingItem
                             icon="information-circle-outline"

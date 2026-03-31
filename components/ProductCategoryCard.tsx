@@ -1,16 +1,18 @@
 import React, {useState} from "react";
-import {Text, View, Image, Pressable, StyleSheet} from "react-native";
+import {Text, View, Image, Pressable, StyleSheet, Dimensions} from "react-native";
 import { useRouter } from "expo-router";
+import { useTheme } from "../hooks/useTheme";
 
 export default function ProductCategoryCard({ category, imageSource, onLoaded, size }: { category: string, imageSource: string, onLoaded: () => void, size?: "small" | "large"; }) {
     const router = useRouter();
     const [loaded, setLoaded] = useState(false);
+    const { theme } = useTheme();
 
     return (
         <Pressable onPress={() => {
             router.push(`/search?query=shoes&category=${category}`);
         }}
-        style={{ width: 182, height: 182, marginBottom: 10,}}
+        style={{ width: ((Dimensions.get("window").width - theme.spacing.sm * 5) / 2), height: ((Dimensions.get("window").width - theme.spacing.sm * 5) / 2), marginBottom: 10,}}
         >
             <Image
                 source={typeof imageSource === "string"

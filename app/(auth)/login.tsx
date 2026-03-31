@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react';
+import { useState } from 'react';
 import {
     View,
     Text,
     TextInput,
     TouchableOpacity,
     ActivityIndicator,
-    StyleSheet,
-    ViewStyle, TextStyle
+    ViewStyle, TextStyle,
+    SafeAreaView
 } from 'react-native';
 import { useAuth } from "../../hooks/useAuth";
 import { useRouter } from "expo-router";
@@ -17,12 +17,12 @@ import { useTheme } from "../../hooks/useTheme";
 import { styles as globalStyles } from "../../src/styles/styles";
 
 export default function LoginScreen() {
-    const { login, loading, error } = useAuth();
+    const { login, loading } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
     const [loginLoading, setLoginLoading] = useState(false);
-    const { isDark, toggleTheme, theme } = useTheme();
+    const { theme } = useTheme();
     const pageStyles = globalStyles(theme);
 
     const handleSubmit = async () => {
@@ -61,6 +61,12 @@ export default function LoginScreen() {
     }
 
     return (
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: theme.colors.background,
+            }}
+        >
         <View style={pageStyles.outerContainer as ViewStyle}>
             <View style={pageStyles.formWrapper as ViewStyle}>
                 <Text style={pageStyles.loginTitle as TextStyle}>Login</Text>
@@ -110,5 +116,6 @@ export default function LoginScreen() {
                 </TouchableOpacity>
             </View>
         </View>
+            </SafeAreaView>
     )
 }

@@ -73,7 +73,7 @@ export default function Listing() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red'  }}
+        <SafeAreaView style={{ flex: 1, borderStyle: "solid", borderColor: 'red', backgroundColor: theme.colors.background  }}
                       edges={["top", "left", "right"]}
         >
             <ScrollView

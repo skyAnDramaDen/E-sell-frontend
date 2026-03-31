@@ -46,8 +46,8 @@ export default function CustomDrawer(props: any) {
                     justifyContent: "center",
                     alignItems: "center",
                 }}>
-                    <View style={{width: "80%", backgroundColor: "#fff", padding: 20, borderRadius: 10,}}>
-                        <Text style={{fontSize: 18, fontWeight: "600", marginBottom: 12}}>
+                    <View style={{width: "80%", backgroundColor: theme.colors.background, padding: 20, borderRadius: 10,}}>
+                        <Text style={{fontSize: 18, fontWeight: "600", marginBottom: 12, color: theme.colors.text}}>
                             Are you sure you want to logout?
                         </Text>
 

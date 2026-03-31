@@ -6,7 +6,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import ActionButton from "../../../components/ActionButton";
 import ProductCategoryCard from "../../../components/ProductCategoryCard";
 import { Ionicons } from "@expo/vector-icons"; import { TouchableOpacity } from "react-native"
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import { useFonts, Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 
 import { styles as globalStyles } from '../../../src/styles/styles';

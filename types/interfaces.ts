@@ -191,6 +191,7 @@ export interface ConversationParticipant {
     conversation?: Conversation;
     user?: User;
     name: string;
+    createdAt: Date;
 }
 export type ConversationParticipants = ConversationParticipant[];
 
@@ -221,4 +222,11 @@ export interface ThemeContextType {
     theme: typeof lightTheme;
     isDark: boolean;
     toggleTheme: () => void;
+}
+
+export interface ChatContextValue {
+    conversations: Conversation[];
+    unread: Record<string, number>;
+    activeChatId: string | null;
+    setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
 }
