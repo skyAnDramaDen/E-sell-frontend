@@ -1,6 +1,6 @@
-import React, {createContext, useState, useEffect, ReactNode, useMemo} from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation, useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 import { io, Socket } from "socket.io-client";
 
 import { base_url } from "../src/config/local";

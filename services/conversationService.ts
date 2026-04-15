@@ -1,4 +1,4 @@
-import {Message, ConversationType, CreateConversationPayload} from "../types/interfaces";
+import { CreateConversationPayload } from "../types/interfaces";
 import {api} from "./authService";
 
 export async function get_all_conversations (id: string) {

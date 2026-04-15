@@ -35,7 +35,7 @@ export default function Search() {
     const params = useLocalSearchParams();
     const [category, setCategory] = useState(params.category as string || "" || null);
     const { user } = useAuth();
-    const { isDark, toggleTheme, theme } = useTheme();
+    const { theme } = useTheme();
     const pageStyles = globalStyles(theme);
     const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,6 @@ export default function Search() {
             }
 
             return () => {
-                // console.log("Cleaning up Search Page!");
                 // setQuery('');
                 // setCategory(null);
                 // setListings([]);

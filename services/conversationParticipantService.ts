@@ -1,7 +1,4 @@
 import {
-    Message,
-    ConversationType,
-    CreateConversationPayload,
     CreateConversationParticipantPayloads
 } from "../types/interfaces";
 import {api} from "./authService";
